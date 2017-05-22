@@ -1,0 +1,478 @@
+﻿@{
+    ViewBag.Title = "CHẤM CÔNG NHÂN VIÊN";
+}
+<style>
+    .grouppb {
+        background-color: #f9f487 !important;
+        font-weight: bold;
+        /*height: 33px !important;*/
+        text-transform: uppercase;
+    }
+    .clsSunday {
+        background-color: #ef4949 !important;
+    }
+    .blackcolor{color:#333;}
+    #cbThang, #cbNam{    
+        color: #333;
+        height: 27px;
+        border: none;
+        border-radius: 5px;
+    }
+</style>
+<script type="text/javascript">
+
+    var viewModel = kendo.observable({
+        isVisible: true,
+        selectedRow: null,
+        ModelEntity: function () { return kendo.observable({ data: {} }); },
+
+        data: null,
+        thang: null,
+        nam: null,
+        _dataSource: null,
+        getData: function (data) {
+            var tmpData = [];
+            var arrO = Object.keys(data[0]);
+            for (var i = 0; i < data.length; i++) {
+                var oItem = {};
+                oItem['employeeid'] = data[i]['employeeid'];
+                oItem['group'] = data[i]["group"];
+                oItem['fullname'] = data[i]["fullname"];
+                oItem['line'] = data[i]["line"];
+
+                for (var j = 0; j < arrO.length; j++) {
+                    if (arrO[j] != "group" && arrO[j] != "line" && arrO[j] != "employeeid" && arrO[j] != "pbid" && arrO[j] != "pb" && arrO[j] != "fullname") {
+                        if (data[i]["group"] == 1) oItem['s' + arrO[j]] = ".";
+                        else {
+                            if (data[i][arrO[j]] != null)
+                                oItem['s' + arrO[j]] = data[i][arrO[j]].toString();
+                            else
+                                oItem['s' + arrO[j]] = data[i][arrO[j]] ? data[i][arrO[j]].toString() : "_";
+                        }
+                    }
+                }
+                tmpData.push(oItem);
+            }
+            return tmpData;
+        },
+        onRefresh: function () {
+            var thisObj = this;
+            var grid = $("#gridMain").data("kendoGrid");
+            if (grid)
+                grid.destroy();
+
+            clsApi.request('/DateKeeping/getDateKeeping', function (res) {
+                thisObj.data = thisObj.getData(res);
+                var JsonGd = new kendo.data.DataSource({ transport: { read: function (options) { options.success(thisObj.data); } } });
+                //thisObj._dataSource = new kendo.data.DataSource({ transport: { read: function (options) { options.success(thisObj.data); } } });
+                var cols = [];
+                var colTmp = [];
+                cols.push({
+                    field: "fullname",
+                    title: "Họ tên",
+                    width: 240,
+                    locked: true,
+                    lockable: false
+                }, {
+                    field: "line",
+                    title: "Line",
+                    width: 80,
+                    locked: true,
+                    lockable: false
+                });
+                var arrO = Object.keys(thisObj.data[0]);
+                for (var i = 0; i < arrO.length; i++) {
+                    if (arrO[i] != "group" && arrO[i] != "line" && arrO[i] != "employeeid" && arrO[i] != "pbid" && arrO[i] != "pb" && arrO[i] != "fullname") {
+                        var ngay = parseInt(arrO[i].replace('s', ''));
+                        var thang = (parseInt(thisObj.thang) -1);
+                        var nam = parseInt(thisObj.nam);
+                        cols.push({
+                            field: arrO[i],
+                            title: arrO[i].replace('s', ''),
+                            width: 45,
+                            template: "<span>#: (" + arrO[i] + " == null || typeof("+ arrO[i] + ") === undefined ? '_': " + arrO[i] + ") # </span>",
+                            attributes: { class: ss4.isSunday(new Date(nam, thang, ngay)) ? 'clsSunday' : '' }
+                        });                        
+                    }
+                }
+                function SortArray(a, b) {
+                    if (a.field < b.field) return -1;
+                    else if (a.field > b.field) return 1;
+                    else return 0;
+                }
+
+                $("#gridMain").empty();
+                $("#gridMain").kendoGrid({
+                    toolbar: kendo.template($("#template").html()),
+                    dataSource: JsonGd,
+                    //dataSource: thisObj._dataSource,
+                    //height: 550,
+                    navigatable: true,
+                    groupable: false,
+                    sortable: false,
+                    resizable: true,
+                    reorderable: false,
+                    pageable: false,
+                    columnMenu: false,
+                    @if (clsShared.checkPermission("them", "datekeeping", "index") || clsShared.checkPermission("sua", "datekeeping", "index"))
+                        {
+                        <text>
+                    editable: true,
+                    </text>
+                        }
+                        columns: cols.sort(SortArray),
+                    dataBound: function (e) {
+                            var rows = e.sender.tbody.children();
+                            for (var j = 0; j < rows.length; j++) {
+                                var row = $(rows[j]);
+                                var dataItem = e.sender.dataItem(row);
+                                var group = dataItem.get("group");
+                                if (group == 1) {
+                                    row.addClass("grouppb");
+                                    //truong hop locked [k-grid-content-locked + k-grid-content]
+                                    var id = $(row).attr('data-uid');
+                                $('div.k-grid-content-locked table.k-selectable tr[data-uid="' + id + '"]').addClass('grouppb');
+                                $('div.k-grid-content-locked table tr[data-uid="' + id + '"]').addClass('grouppb');
+                                }
+                            }
+                        },
+                    edit: function (e) {
+                            var indexCell = e.container.context.cellIndex;
+                            var grid = $('#gridMain').data('kendoGrid');
+                            if (indexCell != 'undefined' && (
+                                    //grid.columns[indexCell].field == "fullname" ||
+                                    e.model.group == 1
+                                )) {
+                            //console.log(e.model);
+                            //console.log(grid.columns[indexCell].field);
+                            $('#gridMain').data("kendoGrid").closeCell();
+                            }
+                        }
+                    });
+
+                //ss4.resizeGrid();
+                setTimeout(function () { ss4.resizeGrid(); $("#gridMain").data('kendoGrid').refresh() }, 200);
+                $('#cbThang').val(thisObj.thang);
+                $('#cbNam').val(thisObj.nam);
+                $('#btnXem').unbind('click');
+                $('#btnXem').click(function () {
+                    thisObj.thang = $('#cbThang').val();
+                    thisObj.nam = $('#cbNam').val();
+                    thisObj.onRefresh();
+                });
+            }, null, {
+                data: { MY: thisObj.thang + '/' + thisObj.nam }
+            })
+        },
+        onInitGrid: function () {
+            var thisObj = this;
+            var now = new Date();
+            thisObj.thang = now.getMonth()+1 < 10 ? '0' + (now.getMonth()+1).toString() : (now.getMonth()+1).toString();
+            thisObj.nam = now.getFullYear().toString();
+            this.onRefresh();
+        },
+
+
+        onClick_Save: function () {
+            //TODO
+            var thisObj = this;
+            var arrData = $('#gridMain').data('kendoGrid').dataSource._data;
+            var arrResult = [];
+            for (var i = 0; i < arrData.length; i++) {
+                if (arrData[i].group == 0) {
+                    arrResult.push(arrData[i]);
+                }
+            }
+
+            var _result = '{ thang: "' + $('#cbThang').val() + '", nam: "' + $('#cbNam').val() + '", records: ' + JSON.stringify(arrResult) + ' }';
+            clsApi.request('/DateKeeping/SaveTimeKeeping',
+	            function (responseText) {
+	                thisObj.onRefresh();
+	                ss4.shwNotification('Cập nhật thành công', 'success');
+	            },
+	            null,
+	            {
+	                type: 'POST',
+	                dataType: 'json',
+	                data: { result: _result },
+	                error_message: 'Lỗi cập nhật',
+	                waiting_message: 'Đang cập nhật'
+	            }
+            );
+        },
+        onClick_Excel: function () {
+            var thisObj = this;
+            //begin
+            var arrData = $('#gridMain').data('kendoGrid').dataSource._data;
+            //console.log(arrData);
+            var arrTitle = [];
+            var arrRows = [];
+            var arrField = Object.keys(arrData[0]).sort();
+            //PageHeader
+            var row = {
+                cells: [], height: 58, index: 0
+            };
+            row.cells.push({
+                value: ""
+            },
+			   {
+			       value: "BẢNG CHẤM CÔNG NHÂN VIÊN THÁNG " + $('#cbThang').val() + '/' + $('#cbNam').val(),
+			       color: "#ff0000",
+			       fontFamily: "Arial", fontSize: 20,
+			       bold: true, underline: false, italic: false,
+			       verticalAlign: "center", textAlign: "center",
+			       colSpan: 10,
+			   });
+            arrRows.push(row);
+            //header            
+            var row = { cells: [] };
+            row.cells.push({
+                value: "HỌ TÊN",
+                fontFamily: "Arial", fontSize: 13,
+                bold: true, underline: false, italic: false,
+                verticalAlign: "center", textAlign: "center",
+                borderBottom: { color: "#333", size: 1 },
+                borderTop: { color: "#333", size: 1 },
+                borderLeft: { color: "#333", size: 1 },
+                borderRight: { color: "#333", size: 1 },
+                width: 243
+            });
+            row.cells.push({
+                value: "LINE",
+                fontFamily: "Arial", fontSize: 13,
+                bold: true, underline: false, italic: false,
+                verticalAlign: "center", textAlign: "center",
+                borderBottom: { color: "#333", size: 1 },
+                borderTop: { color: "#333", size: 1 },
+                borderLeft: { color: "#333", size: 1 },
+                borderRight: { color: "#333", size: 1 }
+            });
+            for (var i = 0; i < arrField.length; i++) {
+                if (arrField[i] != 'parent' && arrField[i] != '_handlers' && arrField[i] != '_events' && arrField[i] != 'employeeid' && arrField[i] != 'uid' && arrField[i] != 'group' && arrField[i] != 'fullname' && arrField[i] != 'line') {
+                    row.cells.push({
+                        value: arrField[i].substring(1, 3),
+                        fontFamily: "Arial", fontSize: 13,
+                        bold: true, underline: false, italic: false,
+                        verticalAlign: "center", textAlign: "center",
+                        borderBottom: { color: "#333", size: 1 },
+                        borderTop: { color: "#333", size: 1 },
+                        borderLeft: { color: "#333", size: 1 },
+                        borderRight: { color: "#333", size: 1 }
+                    });
+                }
+            }
+            arrRows.push(row);
+            //body
+            for (var i = 0; i < arrData.length; i++) {
+                row = { cells: [] };
+                row.cells.push({
+                    value: arrData[i]["fullname"],
+                    borderBottom: { color: "#333", size: 1 },
+                    borderTop: { color: "#333", size: 1 },
+                    borderLeft: { color: "#333", size: 1 },
+                    borderRight: { color: "#333", size: 1 },
+                    width: 243,
+                    background: arrData[i].group == 1 ?  "#f9f487" : "#fff"
+                });
+                row.cells.push({
+                    value: arrData[i]["line"],
+                    borderBottom: { color: "#333", size: 1 },
+                    borderTop: { color: "#333", size: 1 },
+                    borderLeft: { color: "#333", size: 1 },
+                    borderRight: { color: "#333", size: 1 }
+                });
+                for (var j = 0; j < arrField.length; j++) {
+                    if (arrField[j] != 'parent' && arrField[j] != '_handlers' && arrField[j] != '_events' && arrField[j] != 'employeeid' && arrField[j] != 'uid' && arrField[j] != 'group' && arrField[j] != 'fullname' && arrField[j] != 'line') {
+                        var ngay = parseInt(arrField[j].replace('s', ''));
+                        var thang = (parseInt(thisObj.thang) - 1);
+                        var nam = parseInt(thisObj.nam);
+
+                        row.cells.push({
+                            value: arrData[i][arrField[j]],
+                            verticalAlign: "center", textAlign: "center",
+                            borderBottom: { color: "#333", size: 1 },
+                            borderTop: { color: "#333", size: 1 },
+                            borderLeft: { color: "#333", size: 1 },
+                            borderRight: { color: "#333", size: 1 },
+                            background: ss4.isSunday(new Date(nam, thang, ngay)) ? '#ef4949' : '#fff'
+
+                        });
+                    }
+                }
+                arrRows.push(row);
+            }
+            //
+            var workbook1 = new kendo.ooxml.Workbook({
+                sheets: [
+                  {
+                      frozenRows: 2,
+                      rows: arrRows,
+                      columns: [{
+                          width: 285,
+                          index: 0
+                      }]
+                  },
+                    
+                ]
+            });
+            kendo.saveAs({
+                dataURI: workbook1.toDataURL(),
+                fileName: "CHAMCONG.xlsx"
+            });
+        },
+        onClick_Print: function () {
+            var gridElement = $('#gridMain'),
+            printableContent = '',
+            win = window.open('', '', 'width=800, height=500, resizable=1, scrollbars=1'),
+            doc = win.document.open();
+
+            var htmlStart =
+                    '<!DOCTYPE html>' +
+                    '<html>' +
+                    '<head>' +
+                    '<meta charset="utf-8" />' +
+                    '<title>BẢNG CHẤM CÔNG THÁNG ' + $('#cbThang').val() + '/' + $('#cbNam').val() + '</title>' +
+                    '<link href="http://kendo.cdn.telerik.com/' + kendo.version + '/styles/kendo.common.min.css" rel="stylesheet" /> ' +
+                    '<style>' +
+                    'html { font: 11pt sans-serif; }' +
+                    '.k-grid { border-top-width: 0; }' +
+                    '.k-grid, .k-grid-content { height: auto !important; }' +
+                    '.k-grid-content { overflow: visible !important; }' +
+                    'div.k-grid table { table-layout: auto; width: 100% !important; }' +
+                    '.k-grid .k-grid-header th { border-top: 1px solid; }' +
+                    '.k-grouping-header, .k-grid-toolbar, .k-grid-pager > .k-link { display: none; }' +
+                    // '.k-grid-pager { display: none; }' + // optional: hide the whole pager
+                    '</style>' +
+                    '</head>' +
+                    '<body>';
+
+            var htmlEnd =
+                    '</body>' +
+                    '</html>';
+
+            var gridHeader = gridElement.children('.k-grid-header');
+            if (gridHeader[0]) {
+                var thead = gridHeader.find('thead').clone().addClass('k-grid-header');
+                printableContent = gridElement
+                    .clone()
+                        .children('.k-grid-header').remove()
+                    .end()
+                        .children('.k-grid-content')
+                            .find('table')
+                                .first()
+                                    .children('tbody').before(thead)
+                                .end()
+                            .end()
+                        .end()
+                    .end()[0].outerHTML;
+            } else {
+                printableContent = gridElement.clone()[0].outerHTML;
+            }
+
+            doc.write(htmlStart + printableContent + htmlEnd);
+            doc.close();
+            win.print();
+        }
+    });
+    $(document).ready(function () {
+        $('#breadcrumb').html('Nghiệp vụ <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span> Chấm công nhân viên');
+        viewModel.onInitGrid();
+        kendo.bind($("#wrapperMain"), viewModel);
+
+        ss4.resizeGrid();
+
+        var cbThangNam = $("#cbThangNam").kendoDatePicker({
+            start: "year",
+            depth: "year",
+            value: new Date(),
+            parseFormats: ["MM/yyyy"],
+            format: "MM/yyyy",
+            change: function () {
+                //kendo.toString(this.value(), 'd');
+                //dhGridSource.read();
+            }
+        }).data("kendoDatePicker");
+    });
+    
+</script>
+<script type="text/x-kendo-template" id="template">
+    <div class="toolbar">
+        <label class="category-label">Tháng năm:&nbsp;</label>
+        <select id="cbThang">
+            <option value="01">Tháng 01</option>
+            <option value="02">Tháng 02</option>
+            <option value="03">Tháng 03</option>
+            <option value="04">Tháng 04</option>
+            <option value="05">Tháng 05</option>
+            <option value="06">Tháng 06</option>
+            <option value="07">Tháng 07</option>
+            <option value="08">Tháng 08</option>
+            <option value="09">Tháng 09</option>
+            <option value="10">Tháng 10</option>
+            <option value="11">Tháng 11</option>
+            <option value="12">Tháng 12</option>
+        </select>
+        <select id="cbNam">
+            <option value="2016">2016</option>
+            <option value="2017">2017</option>
+            <option value="2018">2018</option>
+            <option value="2019">2019</option>
+            <option value="2020">2020</option>
+        </select>
+        <button type="button" class="btn blackcolor btn-sm margin-right-5" id="btnXem">
+            <span class="glyphicon glyphicon-floppy-save margin-right-5" aria-hidden="true"></span> XEM
+        </button>
+    </div>
+</script>
+
+<div id="wrapperMain">
+    
+    <!-- action buttons -->
+    <div class="subhead-collapse" style="height: 43px;">
+        <div class="subhead">
+            <div class="container-fluid">
+                <div id="container-collapse" class="container-collapse"></div>
+                <div class="row-fluid">
+                    <div class="col-sm-12">
+                        <div class="btn-toolbar" id="toolbar">
+                            
+                            <div class="btn-wrapper" id="toolbar-apply">
+                                @*<input type="search" id="cbThangNam" placeholder="Tháng năm" style="width: 160px;" />*@
+                                
+                                @if (clsShared.checkPermission("them", "datekeeping", "index") || clsShared.checkPermission("sua", "datekeeping", "index"))
+                                {
+                                <button type="button" class="btn btn-primary btn-sm margin-right-5" data-bind="click: onClick_Save">
+                                    <span class="glyphicon glyphicon-floppy-save margin-right-5" aria-hidden="true"></span> LƯU
+                                </button>
+                                }
+
+@if (clsShared.checkPermission("print", "datekeeping", "index"))
+{
+                                <button type="button" class="btn btn-primary btn-sm margin-right-5" style="position:absolute;right:0px;" data-bind="click: onClick_Print">
+                                    <span class="glyphicon glyphicon-print margin-right-5" aria-hidden="true"></span> PRINT
+                                </button>
+}
+@if (clsShared.checkPermission("excel", "datekeeping", "index"))
+{
+                                <button type="button" class="btn btn-primary btn-sm" style="position:absolute;right:90px;" data-bind="click: onClick_Excel">
+                                    <span class="glyphicon glyphicon-download-alt margin-right-5" aria-hidden="true"></span> EXCEL
+                                </button>
+}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="wrapperContainer" style="height:100%">
+        <div class="wrapperGrid grid-section k-content wide">
+            <div>
+                <span id="notification"></span>
+                <div id="gridMain"></div>
+            </div>
+        </div>
+    </div>
+</div>

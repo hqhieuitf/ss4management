@@ -1,0 +1,572 @@
+﻿@{
+    ViewBag.Title = "PHÂN QUYỀN NGƯỜI DÙNG";
+    Layout = "~/Views/Shared/_LayoutUI.cshtml";
+}
+
+
+@model string
+<style>
+    .textbox-addon {
+        /*top:5px;*/
+    }
+    .checkbox_phanquyen {
+        margin: 0px;
+        padding-right: 12px;
+        background-position: 1px 0px;
+    }
+
+    .checkbox_no {
+        background: url('/content/images/checkbox_no.png');
+    }
+
+    .checkbox_yes {
+        background: url('/content/images/checkbox_yes.png');
+    }
+
+    a.checkbox_phanquyen:hover {
+        text-decoration: none !important;
+        color: #fff !important;
+    }
+
+    .btnDialog, .btnDialog:hover {
+        padding: 0px 15px;
+        color: #005580;
+        background: #E0ECFF;
+    }
+
+    .datagrid-view .datagrid-editable-input {
+        height: 21px !important;
+    }
+
+    .tbPermission {
+        margin: 0px;
+        padding: 0px;
+        width: 99%;
+        /*box-shadow: 10px 10px 5px #888888;*/
+        border: 1px solid #000000;
+        -moz-border-radius-bottomleft: 0px;
+        -webkit-border-bottom-left-radius: 0px;
+        border-bottom-left-radius: 0px;
+        -moz-border-radius-bottomright: 0px;
+        -webkit-border-bottom-right-radius: 0px;
+        border-bottom-right-radius: 0px;
+        -moz-border-radius-topright: 0px;
+        -webkit-border-top-right-radius: 0px;
+        border-top-right-radius: 0px;
+        -moz-border-radius-topleft: 0px;
+        -webkit-border-top-left-radius: 0px;
+        border-top-left-radius: 0px;
+    }
+
+        .tbPermission table {
+            border-collapse: collapse;
+            border-spacing: 0;
+            width: 100%;
+            height: 100%;
+            margin: 0px;
+            padding: 0px;
+        }
+
+        .tbPermission tr:last-child td:last-child {
+            -moz-border-radius-bottomright: 0px;
+            -webkit-border-bottom-right-radius: 0px;
+            border-bottom-right-radius: 0px;
+        }
+
+        .tbPermission table tr:first-child td:first-child {
+            -moz-border-radius-topleft: 0px;
+            -webkit-border-top-left-radius: 0px;
+            border-top-left-radius: 0px;
+        }
+
+        .tbPermission table tr:first-child td:last-child {
+            -moz-border-radius-topright: 0px;
+            -webkit-border-top-right-radius: 0px;
+            border-top-right-radius: 0px;
+        }
+
+        .tbPermission tr:last-child td:first-child {
+            -moz-border-radius-bottomleft: 0px;
+            -webkit-border-bottom-left-radius: 0px;
+            border-bottom-left-radius: 0px;
+        }
+
+        .tbPermission tr:hover td {
+        }
+
+        .tbPermission tr:nth-child(odd) {
+            background-color: #e5e5e5;
+        }
+
+        .tbPermission tr:nth-child(even) {
+            background-color: #ffffff;
+        }
+
+        .tbPermission td {
+            vertical-align: middle;
+            border: 1px solid #000000;
+            border-width: 0px 1px 1px 0px;
+            text-align: left;
+            padding: 7px;
+            font-size: 12px;
+            font-family: Arial;
+            font-weight: normal;
+            color: #000000;
+        }
+
+        .tbPermission tr:last-child td {
+            border-width: 0px 1px 0px 0px;
+        }
+
+        .tbPermission tr td:last-child {
+            border-width: 0px 0px 1px 0px;
+        }
+
+        .tbPermission tr:last-child td:last-child {
+            border-width: 0px 0px 0px 0px;
+        }
+
+        .tbPermission tr:first-child td {
+            background: -o-linear-gradient(bottom, #cccccc 5%, #b2b2b2 100%);
+            background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #cccccc), color-stop(1, #b2b2b2) );
+            background: -moz-linear-gradient( center top, #cccccc 5%, #b2b2b2 100% );
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#cccccc", endColorstr="#b2b2b2");
+            background: -o-linear-gradient(top,#cccccc,b2b2b2);
+            background-color: #cccccc;
+            border: 0px solid #000000;
+            text-align: center;
+            border-width: 0px 0px 1px 1px;
+            font-size: 14px;
+            font-family: Arial;
+            font-weight: bold;
+            color: #000000;
+        }
+
+        .tbPermission tr:first-child:hover td {
+            background: -o-linear-gradient(bottom, #cccccc 5%, #b2b2b2 100%);
+            background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #cccccc), color-stop(1, #b2b2b2) );
+            background: -moz-linear-gradient( center top, #cccccc 5%, #b2b2b2 100% );
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#cccccc", endColorstr="#b2b2b2");
+            background: -o-linear-gradient(top,#cccccc,b2b2b2);
+            background-color: #cccccc;
+        }
+
+        .tbPermission tr:first-child td:first-child {
+            border-width: 0px 0px 1px 0px;
+        }
+
+        .tbPermission tr:first-child td:last-child {
+            border-width: 0px 0px 1px 1px;
+        }
+
+    .bold {
+        font-weight: bold;
+    }
+
+    .rowhide {
+        display: none;
+    }
+
+    .rowshow {
+        display: grid;
+    }
+
+    .icon-tree-gantt-space {
+        padding: 8px;
+        background: 0 0;
+        position: relative;
+        top: -4px;
+        left: 16px;
+    }
+
+    .icon-tree-gantt-add {
+        padding: 8px;
+        background: url(/content/images/16_square_blue_add.png) no-repeat;
+        position: relative;
+        top: -4px;
+        left: 16px;
+        cursor: pointer;
+    }
+
+    .icon-tree-gantt-remove {
+        padding: 8px;
+        background: url(/content/images/16_square_blue_remove.png) no-repeat;
+        position: relative;
+        top: -4px;
+        left: 16px;
+        cursor: pointer;
+    }
+
+    .line-height-20 {
+        line-height: 20px;
+    }
+
+    .line-height-25 {
+        line-height: 25px;
+    }
+
+    .line-height-30 {
+        line-height: 30px;
+    }
+
+    .line-height-45 {
+        line-height: 45px;
+    }
+</style>
+<script src="~/Content/js/jquery.ajaxq.js"></script>
+<script src="~/Content/js/jquery.form.min.js"></script>
+
+<div class="contentinner" style="margin-top:10px;">
+
+    <div class="widgetcontent bordered shadowed nopadding fixWidthDataGrid" style="margin-bottom:0px;">
+        <div id="panelTimkiem" data-options="collapsible:false" class="extjsui-panel" title="PHÂN QUYỀN NGƯỜI DÙNG" style="width:100%;height:80px;padding:5px;">
+            <div class="extjsui-layout" style="width:100%;height:41px;">
+                <div data-options="region:'center'" style="width:100%;">
+                    <div id="frmSearch">
+                        <input type="hidden" id="pageCurrent" name="pageCurrent" value="getData" />
+                        <input type="hidden" id="ajaxData" name="ajaxData" value="true" />
+
+                        <div class="pure-g" style="margin:0px 10px;line-height:28px;">                           
+                            <div class="pure-u-12-24">
+                                <div class="pure-g">
+                                    <div class="pure-u-1-4 bold">Nhân viên</div>
+                                    <div class="pure-u-3-4">
+                                        <input id="ccNhanvien" class="extjsui-combogrid" style="width:100%;height:30px;" data-options="
+                                               panelWidth: 390,
+                                               idField: 'id',
+                                               textField: 'fullname',                                        
+                                                columns: [[
+                                                    {field:'fullname',title:'Họ tên',width:100},
+                                                ]],
+                                                fitColumns: true,
+                                                onHidePanel: function(){
+                                                    loadPhanquyen();
+                                                }">                                        
+                                    </div>                                   
+
+                                </div>
+
+                            </div>
+                            <div class="pure-u-12-24">
+                                <button id="btnAllow" value="0" style="margin-left:20px;" onclick="openDialog();">Đổi mật khẩu</button>
+                            </div>
+                        </div>
+                        <div class="pure-g" style="margin:0px 10px;line-height:28px;">
+                            <div class="pure-u-10-24">
+
+                            </div>
+                            <div class="pure-u-14-24"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="Thaco">
+            <div id="panelRPT" data-options="collapsible:true" class="extjsui-panel" style="width:100%; height:400px; padding:0px;overflow:hidden;">
+                <div class="pure-g" style="padding:5px 0px">
+                    <div class="pure-u-18-24">
+                        <table id="dgRolePermis" title="Chức năng" class="extjsui-treegrid" style="width:100%;height:400px"
+                               data-options="
+                               url: '/Permission/phanquyenpttt',
+                               onBeforeLoad: function(param){
+                                    //param.pageCurrent= 'loadUserPermission';
+                        //param.para1= userSelected.id;
+                        },
+                        method: 'post',
+                        rownumbers: false,
+                        idField: 'id',
+                        treeField: 'name'
+                        ">
+                        <thead>
+                            <tr>
+                                <th data-options="field:'name'" width="300">Danh sách menu</th>
+                                <th data-options="field:'xem', align: 'center', formatter: xem_format" width="50">Xem</th>
+                                <th data-options="field:'them', align: 'center', formatter: them_format" width="50">Thêm</th>
+                                <th data-options="field:'sua', align: 'center', formatter: sua_format" width="50">Sửa</th>
+                                <th data-options="field:'xoa', align: 'center', formatter: xoa_format" width="50">Xóa</th>
+                                <th data-options="field:'print', align: 'center', formatter: print_format" width="50">In</th>
+                                <th data-options="field:'excel', align: 'center', formatter: excel_format" width="50">Excel</th>
+                            </tr>
+                        </thead>
+                        </table>
+                    </div>
+                    <div class="pure-u-6-24">
+                        <div id="s14" class="extjsui-panel" title="Đơn vị / phòng ban <a href='javascript:void(0);' style='float:right;margin-right:10px;' onclick='saveKhuvuc();'>Lưu</a>" style="width:100%;height:200px;padding:0px;">
+                            <ul id="tree_datt" class="extjsui-tree" data-options="animate:false,checkbox:true"></ul>
+                        </div>
+                        <div id="s14" class="extjsui-panel" title="Phân quyền line" style="width:100%;height:200px;padding:0px;">
+                            <ul id="tree_line" class="extjsui-tree" data-options="animate:false,checkbox:true"></ul>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- dialog -->
+<div id="dlgCRUD" data-options="iconCls:'icon-window',modal:true,minimizable:false,maximizable:false,collapsible:false,draggable:true,resizable:false,
+    footer:'#ft'" class="extjsui-window" style="width: 420px; height: 220px; padding: 5px 10px;"
+     closed="true" buttons="#dlgCRUD-buttons">
+    <form id="fmdlgCRUD" method="post" novalidate>
+        <input type="hidden" id="ilevel" name="ilevel" value="110" />
+        <input type="hidden" id="valueid" name="valueid" value="220" />
+        <input type="hidden" id="parentid" name="parentid" value="1110" />
+
+        <table style="width:100%;margin:27px 0px;">
+            <tr>
+                <td id="lblMatkhau">Mật khẩu:</td>
+                <td><input name="Matkhau" id="Matkhau" class="extjsui-validatebox span3" required="required" type="password" style="width:100%;"></td>
+            </tr>                     
+        </table>
+    </form>
+</div>
+<div id="ft" style="padding:5px;text-align:center;">
+    <a href="javascript:void(0)" class="extjsui-linkbutton btnDialog" onclick="javascript:setPassword();">Lưu và thoát</a>
+    <a href="javascript:void(0)" class="extjsui-linkbutton btnDialog" onclick="jQuery('#dlgCRUD').dialog('close');">Bỏ qua</a>
+</div>
+
+<script type="text/javascript">
+    var arrKhuVuc, arrLine;
+    $(document).ready(function () {
+        $('#breadcrumb').html('Phân quyền <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span> Người dùng');
+        clsApi.request('/dept/getCate', function (res) {            
+            arrKhuVuc = res;           
+            $('#tree_datt').tree('loadData', res);
+        }, null,
+        {
+            dataType: 'json',
+            error_message: 'Lỗi cập nhật',
+            waiting_message: 'Đang cập nhật'
+        });
+        clsApi.request('/line/getCate', function (res) {
+            arrLine = res;
+            $('#tree_line').tree('loadData', res);
+        }, null,
+        {
+            dataType: 'json',
+            error_message: 'Lỗi cập nhật',
+            waiting_message: 'Đang cập nhật'
+        });
+
+		loadNhanvien();
+    });
+
+    function loadNhanvien() {
+        clsApi.request('/employee/getCate',
+            function (res) {
+                var grid = $('#ccNhanvien').combogrid('grid');
+                grid.datagrid('loadData', res);
+                grid.datagrid('selectRow', 0);
+                loadPhanquyen();
+            },
+            null,
+            {
+                data: {
+                    pageCurrent: 'getNhanvien',
+                    ajaxData: true,
+                    type: 'POST',
+                    dataType: 'json'
+                }
+            });
+    };
+    function loadPhanquyen() {
+        var _nhanvienid = $('#ccNhanvien').combogrid('getValue');
+        $('#dgRolePermis').treegrid('load', { pageCurrent: 'loadRolePermis', ajaxData: true, nhanvienid: _nhanvienid });
+
+        uncheckDGSelected(arrKhuVuc);
+        uncheckLineSelected(arrLine);
+        clsApi.request('/permission/phanquyenpttt', function (res) {
+            var dept = eval('(' + res.dept + ')');
+            var line = eval('(' + res.line + ')');
+
+            var arrKV = [], arrLine = [];
+            for (var i = 0; i < dept.length; i++) arrKV.push(dept[i].Name);
+            for (var i = 0; i < line.length; i++) arrLine.push(line[i].Name);
+            checkDGSelected(arrKV);
+            checkLineSelected(arrLine);
+        }, null,
+        {
+            type: 'GET',
+            dataType: 'json',
+            data: { pageCurrent: 'loadRolePermisDG', nhanvienid: _nhanvienid },
+            error_message: 'Lỗi tải sơ đồ đơn vị',
+            waiting_message: 'Đang tải sơ đồ đơn vị'
+        });
+    };
+
+    function checkDGSelected(KVSelected) {
+        for (var j = 0; j < KVSelected.length; j++) {
+            try {
+                var node = $('#tree_datt').tree('find', KVSelected[j]);
+                $('#tree_datt').tree('check', node.target);
+            } catch (err) { }
+        }
+    };
+    function uncheckDGSelected(KVSelected) {
+        for (var j = 0; j < KVSelected.length; j++) {
+            try {
+                var node = $('#tree_datt').tree('find', KVSelected[j].id);
+                $('#tree_datt').tree('uncheck', node.target);                
+            } catch (err) { }
+        }
+    };
+    function checkLineSelected(KVSelected) {
+        for (var j = 0; j < KVSelected.length; j++) {
+            try {
+                var node = $('#tree_line').tree('find', KVSelected[j]);
+                $('#tree_line').tree('check', node.target);
+            } catch (err) { }
+        }
+    };
+    function uncheckLineSelected(KVSelected) {
+        for (var j = 0; j < KVSelected.length; j++) {
+            try {
+                var node = $('#tree_line').tree('find', KVSelected[j].id);
+                $('#tree_line').tree('uncheck', node.target);
+            } catch (err) { }
+        }
+    };
+
+    function saveKhuvuc() {
+        var arrChecked = null;
+        arrChecked = $('#tree_datt').tree('getChecked');        
+        var sDonvi = '', sLine = '';
+        var nhanvien = $('#ccNhanvien').combobox('getValue');
+        for (var i = 0; i < arrChecked.length; i++) {
+            if (sDonvi == '') sDonvi = arrChecked[i].id;
+            else sDonvi += ',' + arrChecked[i].id;
+        }
+        arrChecked = $('#tree_line').tree('getChecked');
+        for (var i = 0; i < arrChecked.length; i++) {
+            if (sLine == '') sLine = arrChecked[i].id;
+            else sLine += ',' + arrChecked[i].id;
+        }
+
+        clsApi.request('/permission/SavePermissDG',
+            function (res) {
+                if (res == 1) alert('Đã lưu thành công.');
+                else alert('Bạn không có quyền.');
+            }, function () { },
+            {
+                dataType: 'json',
+                data: { pageCurrent: 'save_khuvucdatt', ID: nhanvien, lstDV: sDonvi, lstLine: sLine },
+                error_message: 'Lỗi cập nhật',
+                waiting_message: 'Đang cập nhật'
+            });
+    };
+    function openDialog() {
+        $("#dlgCRUD").dialog("open").dialog("setTitle", "Thiết lập mật khẩu mới");
+        $('#Matkhau').val('');
+    };
+    function setPassword() {
+        var clsobj = {};
+        clsobj.nhanvienid = $('#ccNhanvien').combogrid('getValue');
+        clsobj.password = $('#Matkhau').val();
+
+        $.ajax({
+            type: "POST",
+            url: "/permission/SavePassword",
+            data: JSON.stringify(clsobj),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                alert('Đã thiết lập mật khẩu thành công.');
+                jQuery('#dlgCRUD').dialog('close');
+            }
+        });
+    };
+</script>
+<script type="text/javascript">
+    function xem_format(value, row, index) {
+        if (value) { return "<a class='checkbox_phanquyen checkbox_yes' href='javascript:void(0);' onclick='updateCheckDequy(" + row.id + ",1,0" + ")'>&nbsp;</a>"; }
+        else { return "<a class='checkbox_phanquyen checkbox_no' href='javascript:void(0);' onclick='updateCheckDequy(" + row.id + ",1,1" + ")'>&nbsp;</a>"; }
+    };
+    function them_format(value, row, index) {
+        if (value) { return "<a class='checkbox_phanquyen checkbox_yes' href='javascript:void(0);' onclick='updateCheckDequy(" + row.id + ",2,0" + ")'>&nbsp;</a>"; }
+        else { return "<a class='checkbox_phanquyen checkbox_no' href='javascript:void(0);' onclick='updateCheckDequy(" + row.id + ",2,1" + ")'>&nbsp;</a>"; }
+    };
+    function sua_format(value, row, index) {
+        if (value) { return "<a class='checkbox_phanquyen checkbox_yes' href='javascript:void(0);' onclick='updateCheckDequy(" + row.id + ",3,0" + ")'>&nbsp;</a>"; }
+        else { return "<a class='checkbox_phanquyen checkbox_no' href='javascript:void(0);' onclick='updateCheckDequy(" + row.id + ",3,1" + ")'>&nbsp;</a>"; }
+    };
+    function xoa_format(value, row, index) {
+        if (value) { return "<a class='checkbox_phanquyen checkbox_yes' href='javascript:void(0);' onclick='updateCheckDequy(" + row.id + ",4,0" + ")'>&nbsp;</a>"; }
+        else { return "<a class='checkbox_phanquyen checkbox_no' href='javascript:void(0);' onclick='updateCheckDequy(" + row.id + ",4,1" + ")'>&nbsp;</a>"; }
+    };
+    function print_format(value, row, index) {
+        if (value) { return "<a class='checkbox_phanquyen checkbox_yes' href='javascript:void(0);' onclick='updateCheckDequy(" + row.id + ",5,0" + ")'>&nbsp;</a>"; }
+        else { return "<a class='checkbox_phanquyen checkbox_no' href='javascript:void(0);' onclick='updateCheckDequy(" + row.id + ",5,1" + ")'>&nbsp;</a>"; }
+    };
+    function excel_format(value, row, index) {
+        if (value) { return "<a class='checkbox_phanquyen checkbox_yes' href='javascript:void(0);' onclick='updateCheckDequy(" + row.id + ",6,0" + ")'>&nbsp;</a>"; }
+        else { return "<a class='checkbox_phanquyen checkbox_no' href='javascript:void(0);' onclick='updateCheckDequy(" + row.id + ",6,1" + ")'>&nbsp;</a>"; }
+    };
+
+    @if (clsShared.checkPermission("them", "permission", "index") || clsShared.checkPermission("sua", "permission", "index"))
+    {
+    <text>
+    function updateCheckDequy(rowid, act, bVal) {
+        $('#dgRolePermis').treegrid('select', rowid);
+        var dataItem = $('#dgRolePermis').treegrid('getSelected');
+        var bOK = false;
+        switch (act) {
+            case 1: dataItem.xem = (bVal == 0 ? false : true); break;
+            case 2: dataItem.them = (bVal == 0 ? false : true); break;
+            case 3: dataItem.sua = (bVal == 0 ? false : true); break;
+            case 4: dataItem.xoa = (bVal == 0 ? false : true); break;
+            case 5: dataItem.print = (bVal == 0 ? false : true); break;
+            case 6: dataItem.excel = (bVal == 0 ? false : true); break;
+        }
+
+        //if (bOK) {
+            var rowSelected = $('#dgRolePermis').treegrid('getSelected');
+            var _data = {
+                ajaxData: true,
+                pageCurrent: 'updateRolePermis',
+                nhanvienId: $('#ccNhanvien').combogrid('getValue'),
+                menuId: rowSelected.id,
+                xem: rowSelected.xem,
+                them: rowSelected.them,
+                sua: rowSelected.sua,
+                xoa: rowSelected.xoa,
+                print: rowSelected.print,
+                excel: rowSelected.excel
+            };
+            $.ajaxq('queue' + ss4.getRandom(1, 99999999).toString(), {
+                url: '/permission/phanquyenpttt',
+                type: 'POST',
+                dataType: 'json',
+                data: _data,
+                cache: false,
+                success: function (res) {
+                    if (res.success) {
+                        $('#dgRolePermis').treegrid('refresh', rowid);
+
+                        var item = $('#dgRolePermis').treegrid('find', rowSelected.id);
+                        if (item != null) {
+                            for (var i = 0; i < item.children.length; i++) {
+                                updateCheckDequy(item.children[i].id, act, bVal);
+                            }
+                        }
+                    }
+                }
+            });
+        //}
+    };
+    </text>
+    }
+    else
+    {
+    <text>
+    function updateCheckDequy(rowid, act, bVal) { alert('Bạn không có quyền thêm hoặc sửa!'); }
+    </text>
+    }
+</script>

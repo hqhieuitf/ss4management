@@ -1,0 +1,290 @@
+/*added by hungdlv*/
+.icon_gantt{ background:url('icons/icon_gantt.png') no-repeat center center; }
+.icon-up{ background:url('icons/arrow_up.png') no-repeat center center; }
+.icon-down{ background:url('icons/arrow_down.png') no-repeat center center; }
+.icon-up-double{ background:url('icons/arrow_up_double.png') no-repeat center center; }
+.icon-down-double{ background:url('icons/arrow_down_double.png') no-repeat center center; }
+.icon-add-root{background:url('icons/add.png') no-repeat center center;}
+
+.icon-baocao{background:url('icons/baocao.png') no-repeat center center;}
+.icon-danhmuc{background:url('icons/danhmuc.png') no-repeat center center;}
+.icon-dulieu{background:url('icons/dulieu.png') no-repeat center center;}
+.icon-nhatky{background:url('icons/nhatky.png') no-repeat center center;}
+.icon-phanquyen{background:url('icons/phanquyen.png') no-repeat center center;}
+
+.icon-unlockedtpt{
+	/*background:url('icons/lock_unlock.png') no-repeat center center;*/
+    background:url('icons/unlock_16x16.jpg') no-repeat center center;
+}
+.icon-searchadv{
+    background:url('icons/find_16x16.png') no-repeat center center;
+}
+.icon-send-group{
+	background:url('icons/send_email_group.png') no-repeat center center;
+}
+.icon-mail,
+.icon-send-user{
+	background:url('icons/send_email_user.png') no-repeat center center;
+}
+.icon-cancel,
+.icon-return{
+	background:url('icons/return.png') no-repeat center center;
+}
+.icon-edit{
+	/*background:url('icons/document_edit.png') no-repeat center center;*/
+    background:url('icons/edit-icon.png') no-repeat center center;
+}
+.icon-remove{
+	background:url('icons/document_delete.png') no-repeat center center;
+}
+.icon-ok{
+	background:url('icons/document_save.png') no-repeat center center;
+}
+/*end added*/
+.icon-blank{
+	background:url('icons/blank.gif') no-repeat center center;
+}
+.icon-add{
+	background:url('icons/edit_add.png') no-repeat center center;
+}
+/*
+.icon-edit{
+	background:url('icons/pencil.png') no-repeat center center;
+}*/
+
+.icon-save{
+	background:url('icons/filesave.png') no-repeat center center;
+}
+.icon-cut{
+	background:url('icons/cut.png') no-repeat center center;
+}
+
+.icon-window{
+	background:url('icons/window.png') no-repeat center center;
+}
+.icon-news{
+	background:url('icons/iconews.png') no-repeat center center;
+}
+.icon-red{
+	background:url('icons/red.png') no-repeat center center;
+}
+.icon-green{
+	background:url('icons/green.png') no-repeat center center;
+}
+.icon-Brown{
+	background:url('icons/Brown.png') no-repeat center center;
+}
+.icon-BlueSky{
+	background:url('icons/BlueSky.png') no-repeat center center;
+}
+.icon-Black{
+	background:url('icons/Black.png') no-repeat center center;
+}
+.icon-DonVi{
+	background:url('icons/DonVi.png') no-repeat center center;
+}
+.icon-KhuVuc{
+	background:url('icons/KhuVuc.png') no-repeat center center;
+}
+.icon-PhongVan{
+	background:url('icons/interview.png') no-repeat center center;
+}
+.icon-Violet{
+	background:url('icons/Violet.png') no-repeat center center;
+}
+.icon-blue{
+	background:url('icons/blue.png') no-repeat center center;
+}
+.icon-calendar{
+	background:url('icons/calendar-icon.png') no-repeat center center;
+}
+.icon-excel{
+	background:url('icons/xl.png') no-repeat center center;
+}
+.icon-share{
+	background:url('icons/Share.png') no-repeat center center;
+}
+.icon-no{
+	background:url('icons/no.png') no-repeat center center;
+}
+
+.icon-xoa{
+	/*background:url('icons/cancel.png') no-repeat center center;*/
+    background:url('icons/remove_16x16.jpg') no-repeat center center;
+}
+.icon-history {
+    background:url('icons/history_16x16.jpg') no-repeat center center;
+}
+
+.icon-reload{
+	background:url('icons/reload.png') no-repeat center center;
+}
+.icon-search{
+	background:url('icons/search.png') no-repeat center center;
+}
+.icon-print{
+	background:url('icons/print.png') no-repeat center center;
+}
+.icon-help{
+	background:url('icons/help.png') no-repeat center center;
+}
+.icon-undo{
+	background:url('icons/undo.png') no-repeat center center;
+}
+.icon-redo{
+	background:url('icons/redo.png') no-repeat center center;
+}
+.icon-back{
+	background:url('icons/back.png') no-repeat center center;
+}
+.icon-sum{
+	background:url('icons/sum.png') no-repeat center center;
+}
+.icon-tip{
+	background:url('icons/tip.png') no-repeat center center;
+}
+.icon-filter{
+	background:url('icons/filter.png') no-repeat center center;
+}
+
+.icon-Chuamail{
+	background:url('icons/Chuamail.png') no-repeat center center;
+}
+.icon-checknames{
+	background:url('icons/checknames.gif') no-repeat center center;
+}
+
+.icon-signature{
+	background:url('icons/signature.png') no-repeat center center;
+}
+.icon-locktpt{
+	/*background:url('icons/lock.png') no-repeat center center;*/
+    background:url('icons/lock_16x16.png') no-repeat center center;
+}
+.icon-lockedtpt{
+	/*background:url('icons/locked.png') no-repeat center center;*/
+    background:url('icons/locked_16x16.png') no-repeat center center;
+    background-position: 0px 4px;
+}
+.icon-profile{
+	background:url('icons/profile.png') no-repeat center center;
+}
+
+.icon-options{
+	background:url('icons/options.png') no-repeat center center;
+}
+
+.icon-mini-add{
+	background:url('icons/mini_add.png') no-repeat center center;
+}
+.icon-mini-edit{
+	background:url('icons/mini_edit.png') no-repeat center center;
+}
+.icon-mini-refresh{
+	background:url('icons/mini_refresh.png') no-repeat center center;
+}
+.icon-info{
+	background:url('icons/info.png') no-repeat center center;
+}
+/*MenuTop*/
+.menuItemIconParentDefault {
+    background:url('icons/icoParentDefault.png') no-repeat center center;
+}
+.menuItemIconChildDefault {
+    background:url('icons/icoChildDefault.png') no-repeat center center;
+}
+.menuItemIconConfig {
+    background:url('icons/icoConfig.png') no-repeat center center;
+}
+.menuItemIconDanhMuc {
+    background:url('icons/icoDanhMuc.png') no-repeat center center;
+}
+.menuItemIconTuyenDung {
+    background:url('icons/icoTuyenDung.png') no-repeat center center;
+}
+.menuItemIconNhanVien {
+    background:url('icons/icoNhanVien.png') no-repeat center center;
+}
+.menuItemIconChamCong {
+    background:url('icons/icoChamCong.png') no-repeat center center;
+}
+.menuItemIconTinhLuong {
+    background:url('icons/icoTinhLuong.png') no-repeat center center;
+}
+.menuItemIconHeThong {
+    background:url('icons/icoHeThong.png') no-repeat center center;
+}
+/*MenuTop*/
+
+.ico-check-active {
+    background:url('icons/check_active.png') no-repeat center center;
+}
+
+.ico-check-inactive {
+    background:url('icons/check_inactive.png') no-repeat center center;
+}
+
+.ico-copy-item {
+    background:url('icons/copy-item.png') no-repeat center center;
+}
+.ico-paste-item {
+    background:url('icons/paste.png') no-repeat center center;
+}
+
+.ico-view-details {
+    background:url('icons/view-details.png') no-repeat center center;
+}
+
+.ico-advanced-search {
+    background:url('icons/icoAdvanced_search.png') no-repeat center center;
+}
+.ico-print {
+    background:url('icons/printer.png') no-repeat center center;
+    cursor:pointer;
+}
+
+.ico-config {
+    background:url('icons/config.png') no-repeat center center;
+}
+
+.ico-user {
+    background:url('icons/user.png') no-repeat center center;
+}
+
+.ico-mail {
+    background:url('icons/mail.png') no-repeat center center;
+}
+.icon-tip2{
+	background:url('icons/tip2.gif') no-repeat center center;
+}
+
+.icon-attachfile{
+	background:url('icons/attachmentblue.png') no-repeat center center;
+}
+
+.icon-on{
+	background:url('icons/swon.png') no-repeat center center;
+}
+
+.icon-off{
+	background:url('icons/swoff.png') no-repeat center center;
+}
+
+.icon-listmenu{
+	background:url('icons/display_listblue.png') no-repeat center center;
+}
+
+.icon-listmenuYelow{
+	background:url('icons/listview-nsa.png') no-repeat center center;
+}
+
+.icon-note{
+	background:url('icons/Note.png') no-repeat center center;
+}
+
+.icon-sort-AZ{
+	background:url('icons/sort-ascend.png') no-repeat center center;
+}
+.icon-classify{
+	background:url('icons/rsz_classify.png') no-repeat center center;
+}

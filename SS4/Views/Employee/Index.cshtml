@@ -1,0 +1,160 @@
+﻿@{
+    ViewBag.Title = "Danh sách nhân viên";
+}
+<style>
+    .k-grid-content table tr:first-child td, .k-grid-content-locked table tr:first-child td{
+        height: 30px;
+    }
+    .k-grid-content-locked tr, .k-grid-content tr {
+        height: 30px!important;
+    }
+    .k-grid .k-alt{
+        height: 30px!important;
+        background-color: #fafafa;
+    }
+    .isnghi {
+        color:#2c2a86;
+        text-decoration: line-through;
+    }
+</style>
+<script type="text/javascript">
+    var arrDept = @Html.Raw(new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(ViewData["dept"]));
+    var arrLine = @Html.Raw(new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(ViewData["line"]));
+</script>
+<script src="~/Content/js/model/employeeModel.js"></script>
+<script id="dlgTemplate" type="text/x-kendo-template">
+    <div id="dlgAddNVNghi">
+        <div class="demo-section k-content">
+            <div>
+                <!-- toolbar -->
+                <div id="toolbarDlg"></div>
+                <form id="frmData" action="javascript:void(0);" style="float:left;width:100%;">
+                    <input type="hidden" id="txtID_Add" value="0" />
+                    <div class="modal-dialog" style="margin:0px;width:100%;">
+                        <div class="modal-body">
+                            <div class="container col-sm-12 col-md-12" style="padding:0px;">
+                                <div class="row" style="margin: 10px 0px;overflow: hidden;">
+                                    <div class="col-sm-12 col-md-12">
+                                        <input type="checkbox" id="chbNghi" name="chbNghi" />
+                                        <label for="chbNghi" style="cursor:pointer;">Trạng thái nghỉ</label>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin: 10px 0px;">
+                                    <div class="col-sm-2 col-md-2" style="padding:5px 0px;text-align:left;">Ngày nghỉ&nbsp;&nbsp; </div>
+                                    <div class="col-sm-4 col-md-4">
+                                        <input type="text" id="txtngaynghi" name="txtngaynghi" value="@System.DateTime.Now.ToString("dd/MM/yyyy")" class="k-textbox" placeholder="Ngày nghỉ" required validationMessage="Vui lòng nhập ngày nghỉ" style="width:100%;" />
+                                    </div>
+
+                                </div>
+                                    <div class="row" style="margin: 10px 0px;">
+                                        <div class="col-sm-2 col-md-2" style="padding:5px 0px;text-align:left;">Lý do nghỉ&nbsp;&nbsp; </div>
+                                        <div class="col-sm-8 col-md-8">
+                                            <input id="txtlydonghi" name="txtlydonghi" class="k-textbox" placeholder="lý do nghỉ" style="width: 100%;" required validationMessage="Vui lòng lý do nghỉ" />
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                </form>
+</div>
+        </div>
+    </div>
+</script>
+
+
+
+<div id="wrapperMain">
+    <!-- action buttons -->
+    <div class="subhead-collapse" style="height: 43px;">
+        <div class="subhead">
+            <div class="container-fluid">
+                <div id="container-collapse" class="container-collapse"></div>
+                <div class="row-fluid">
+                    <div class="col-sm-12">
+                        <div class="btn-toolbar" id="toolbar">
+                            <div class="btn-wrapper" id="toolbar-apply">
+                                @if (clsShared.checkPermission("them", "employee", "index"))
+                                {
+                                    <button type="button" class="btn btn-primary btn-sm margin-right-5" data-bind="click: onClick_Add">
+                                        <span class="glyphicon glyphicon-plus margin-right-5" aria-hidden="true"></span> THÊM
+                                    </button>
+                                }
+                                @if (clsShared.checkPermission("xoa", "employee", "index"))
+                                {
+                                    <button type="button" class="btn btn-primary btn-sm margin-right-5" data-bind="click: onClick_Remove">
+                                        <span class="glyphicon glyphicon-remove margin-right-5" aria-hidden="true"></span> XÓA
+                                    </button>
+                                }
+                                @if (clsShared.checkPermission("them", "employee", "index") || clsShared.checkPermission("sua", "employee", "index"))
+                                {
+                                    <button type="button" class="btn btn-primary btn-sm margin-right-5" data-bind="click: onClick_Save">
+                                        <span class="glyphicon glyphicon-floppy-save margin-right-5" aria-hidden="true"></span> LƯU
+                                    </button>
+
+                                    <button type="button" class="btn btn-primary btn-sm margin-right-5" data-bind="click: onClick_Ngaynghi">
+                                        <span class="glyphicon glyphicon-floppy-save margin-right-5" aria-hidden="true"></span> CẬP NHẬT NGÀY NGHỈ
+                                    </button>
+                                }
+                                @if (clsShared.checkPermission("print", "employee", "index"))
+                                {
+                                    <button type="button" class="btn btn-primary btn-sm margin-right-5" style="position:absolute;right:0px;">
+                                        <span class="glyphicon glyphicon-print margin-right-5" aria-hidden="true"></span> PRINT
+                                    </button>
+                                }
+                                @if (clsShared.checkPermission("excel", "employee", "index"))
+                                {
+                                    <button type="button" class="btn btn-primary btn-sm" style="position:absolute;right:90px;">
+                                        <span class="glyphicon glyphicon-download-alt margin-right-5" aria-hidden="true"></span> EXCEL
+                                    </button>
+                                }
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="wrapperContainer" style="height:100%">
+        <div class="wrapperGrid grid-section k-content wide">
+            <div>
+                <span id="notification"></span>
+                <div data-role="grid"
+                     @if (clsShared.checkPermission("them", "employee", "index") || clsShared.checkPermission("sua", "employee", "index")) { <text>
+                     data-editable="true"
+                     </text>   }
+                     data-sortable="true"
+                     data-selectable="true"
+                     data-autoBind="false"
+                     data-scrollable="true"
+                     data-resizable="true"
+                     data-reorderable="true"
+                     data-columnMenu="true"
+                     data-groupable="false"
+                     data-height="auto"
+                     data-navigatable="true"
+                     @*data-mobile="phone"*@
+                     data-filterable='{"extra":false,"messages":{"info":"Hiển thị dữ liệu:","filter":"Lọc","clear":"Bỏ lọc","isTrue":"True","isFalse":"False","and":"Và","or":"Hoặc"},"operators":{"string":{"contains":"Lọc gần đúng","eq":"Lọc chính xác","neq":"Tất cả trừ"},"number":{"eq":"Bằng","neq":"Khác","gte":"Lớn hơn bằng","gt":"Lớn hơn","lte":"Nhỏ hơn bằng","lt":"Nhỏ hơn"},"date":{"eq":"Tìm chính xác","neq":"Khác ngày","gte":"Lớn hơn bằng","gt":"Lớn hơn","lte":"Nhỏ hơn bằng","lt":"Nhỏ hơn"}}}'
+                     data-pageable='{"refresh":true,"pageSize": 10, "pageSizes":true,"messages":{"display":"{0} - {1} / {2} dòng","empty":"Không có dữ liệu","page":"Trang","of":"của {0}","itemsPerPage":"","first":"Trang đầu","previous":"Trang trước","next":"Trang kế","last":"Trang cuối","refresh":"Làm mới"}}'
+                     data-columns="[
+                             { 'field': 'code', 'title': 'Mã NV', 'width': 100, locked: true },
+                             { 'field': 'fullname', 'title': 'Họ tên', 'width': 300, locked: true },
+                             { 'field': 'birthday', 'title': 'Ngày sinh', 'width': 200, editor: birthdayEditor, template: birthdayView },
+                             { 'field': 'mobile', 'title': 'Điện thoại', 'width': 200 },
+                             { 'field': 'emaillogin', 'title': 'Email đăng nhập', 'width': 300 },
+                             { 'field': 'tbldeptid', 'title': 'Phòng ban', 'width': 200, editor: DeptEditor, template: DeptView, attributes:{style:'text-align:left;'} },
+                             { 'field': 'tbllineid', 'title': 'Line', 'width': 150, editor: LineEditor, template: LineView, attributes:{style:'text-align:center;'} },
+                             { 'field': 'isactive', 'title': 'Cho phép đăng nhập', 'width': 200, editor: checkboxEditor, template: checkboxView, attributes:{style:'text-align:center;'} }
+                        ]"
+                     data-bind="visible: isVisible,
+                                source: dataSource,
+                                events: {
+                                    save: onDebug,
+                                    change: onChangeRow,
+                                    dataBound: dataBound
+                                }"></div>
+            </div>
+        </div>
+    </div>
+</div>

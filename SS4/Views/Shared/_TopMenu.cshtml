@@ -1,0 +1,298 @@
+﻿@{ 
+    clsShared.SESSION_PARA oPara = clsShared.fReadSession();
+
+}
+<div class="navContainer">
+    <div id="header">
+        <nav class="navbar navbar-inverse">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#menu">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a href="/" class="navbar-brand">TKMB COMPANY</a>
+            </div>
+
+            <div class="navbar-collapse collapse" id="menu">
+                <!-- Hệ thống -->
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a data-toggle="dropdown" href="">Hệ thống<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            @{
+                                if (clsShared.checkPermission("xem", "permission", "index"))
+                                {
+                                    <li><a tabindex="-1" href="/permission">Phân quyền người dùng</a></li>
+                                }
+                            }                            
+                        </ul>
+                    </li>
+                </ul>
+
+                <!-- Danh mục -->
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a data-toggle="dropdown" href="">Danh mục<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            @if (clsShared.checkPermission("xem", "lsxuat", "index"))
+                            {
+                                <li><a tabindex="-1" href="/lsxuat">Lệnh SX</a></li>
+                            }
+                            @if (clsShared.checkPermission("xem", "cont", "index"))
+                            {
+                            <li><a tabindex="-1" href="/cont">Định nghĩa Cont</a></li>
+                            }
+@if (clsShared.checkPermission("xem", "line", "index"))
+{
+                            <li><a tabindex="-1" href="/line">Định nghĩa Line</a></li>
+}
+                            <li class="divider"></li>
+@if (clsShared.checkPermission("xem", "product", "index"))
+{
+                            <li><a tabindex="-1" href="/product">Sản phẩm</a></li>
+}
+@if (clsShared.checkPermission("xem", "errgroup", "index"))
+{
+                            <li><a tabindex="-1" href="/errgroup">Nhóm lỗi sản phẩm</a></li>
+}
+@if (clsShared.checkPermission("xem", "errmodifiedgroup", "index"))
+{
+                            <li><a tabindex="-1" href="/errmodifiedgroup">Nhóm lỗi lựa lại</a></li>
+}
+                            <li class="divider"></li>
+@if (clsShared.checkPermission("xem", "dept", "index"))
+{
+                            <li><a tabindex="-1" href="/dept">Danh sách đơn vị</a></li>
+}
+@if (clsShared.checkPermission("xem", "employee", "index"))
+{
+                            <li><a tabindex="-1" href="/employee">Nhân viên</a></li>
+}                            
+                        </ul>
+                    </li>
+                </ul>
+
+                <!-- Nghiệp vụ  -->
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a data-toggle="dropdown" href="">Nghiệp vụ<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+@if (clsShared.checkPermission("xem", "errDataMrg", "index"))
+{
+                            <li><a tabindex="-1" href="/errDataMrg">Kiểm tra chất lượng bao thành phẩm</a></li>
+}
+@if (clsShared.checkPermission("xem", "modifiedDataMrg", "index"))
+{
+                            <li><a tabindex="-1" href="/modifiedDataMrg">Nhập liệu chỉnh sửa túi</a></li>
+}
+@if (clsShared.checkPermission("xem", "datekeeping", "index"))
+{
+                            <li><a tabindex="-1" href="/datekeeping">Chấm công nhân viên</a></li>
+                            <li class="divider"></li>
+}
+@if (clsShared.checkPermission("xem", "ErrCheckMrg", "index"))
+{                            
+                            <li><a tabindex="-1" href="/ErrCheckMrg">Cập nhật lỗi của phòng QC</a></li>
+}
+                            
+                        </ul>
+                    </li>
+                </ul>
+
+                <!-- Báo cáo -->
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a data-toggle="dropdown" href="">Báo cáo<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+@if (clsShared.checkPermission("xem", "report", "RPT_CheckProduct"))
+{
+                            <li><a tabindex="-1" href="/report/RPT_CheckProduct">Kiểm tra chất lượng bao thành phẩm</a></li>
+                            <li><a tabindex="-1" href="/report/RPT_CheckProductEPE">Kiểm tra lỗi may nhân viên</a></li>
+                            <li><a tabindex="-1" href="/report/RPT_CheckProductById">Thống kê lỗi sản phẩm</a></li>
+                            <li class="divider"></li>
+}
+@if (clsShared.checkPermission("xem", "report", "RPT_DialyInspection"))
+{
+                            <li><a tabindex="-1" href="/report/RPT_DialyInspection">Báo cáo kiểm tra hằng ngày</a></li>
+}
+@if (clsShared.checkPermission("xem", "report", "RPT_CheckQuality"))
+{
+                            <li><a tabindex="-1" href="/report/RPT_CheckQuality">Bảng tính sản lượng cho tổ</a></li>
+                            <li class="divider"></li>
+}
+@if( clsShared.checkPermission("xem", "DateKeeping", "index"))
+{
+    <li><a tabindex="-1" href="/DateKeeping/report">Báo cáo kết công</a></li>
+}
+                        </ul>
+                    </li>
+                </ul>                
+
+                <!-- Tài liệu -->
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a data-toggle="dropdown" href="">Hướng dẫn sử dụng<span class="caret"></span></a>      
+                        <ul class="dropdown-menu">
+                            <li><a tabindex="-1" href="/Uploads/HUONG DAN SU DUNG.pdf" target="_blank">Tài liệu</a></li>
+                        </ul>                  
+                    </li>
+                </ul>
+
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a data-toggle="dropdown" href=""><span class="glyphicon glyphicon-user" aria-hidden="true" style="padding-right:5px;"></span>Xin chào: @(((SS4.Models.clsEmployee)Session["NhanVien"]).fullname)<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            @*<li><a href="#">Thông tin</a></li>*@
+                            <li><a href="#" onclick="shwDlgChangePass();">Đổi mật khẩu</a></li>
+                            <div class="divider"></div>
+                            <li><a href="/home/logout">Thoát</a></li>
+                        </ul>
+                    </li>
+                </ul>
+
+            </div>
+        </nav>
+    </div>
+</div>
+<header class="header">
+    <div class="container-logo">
+        <img src="~/Content/images/menu/logo.png" class="logo" alt="Joomla!" />
+    </div>
+    <div class="container-title">
+        <h1 class="page-title">
+            <span class="glyphicon glyphicon-th-large" aria-hidden="true"></span>
+            <span id="breadcrumb"></span>
+        </h1>
+    </div>
+</header>
+
+<script>
+    $(document).ready(function () {       
+        $('.dropdown-submenu a.hasChild').on("click", function (e) {
+            $(this).next('ul').toggle();
+            e.stopPropagation();
+            e.preventDefault();
+        });
+
+        var navTop;
+        var isFixed = false;
+
+        processScrollInit();
+        processScroll();
+
+        $(window).on('resize', processScrollInit);
+        $(window).on('scroll', processScroll);
+
+        function processScrollInit() {
+            if ($('.subhead').length) {
+                navTop = $('.subhead').length && $('.subhead').offset().top - 30;
+
+                // Fix the container top
+                $(".container-main").css("top", $('.subhead').height() + $('nav.navbar').height());
+
+                // Only apply the scrollspy when the toolbar is not collapsed
+                if (document.body.clientWidth > 480) {
+                    $('.subhead-collapse').height($('.subhead').height());
+                    $('.subhead').scrollspy({ offset: { top: $('.subhead').offset().top - $('nav.navbar').height() } });
+                }
+            }
+        }
+
+        function processScroll() {
+            if ($('.subhead').length) {
+                var scrollTop = $(window).scrollTop();
+                if (scrollTop >= navTop && !isFixed) {
+                    isFixed = true;
+                    $('.subhead').addClass('subhead-fixed');
+                    $('.navContainer').addClass('navbar-fixed-top');
+
+                    // Fix the container top
+                    $(".container-main").css("top", $('.subhead').height() + $('nav.navbar').height());
+                } else if (scrollTop <= navTop && isFixed) {
+                    isFixed = false;
+                    $('.subhead').removeClass('subhead-fixed');
+                    $('.navContainer').removeClass('navbar-fixed-top');
+                }
+            }
+        }
+    });
+    var oWin212 = null;
+    function shwDlgChangePass() {
+        oWin212 = $("<div id='popupWindow'></div>")
+                        .appendTo("body")
+                        .kendoWindow({
+                            width: 500,
+                            height: 200,
+                            modal: true,
+                            title: "ĐỔI MẬT KHẨU",
+                            visible: false,
+                            animation: {
+                                open: { effects: 'expand:vertical' },
+                                close: { effects: 'expand:vertical', reverse: true }
+                            },
+                            close: function (e) {
+                                this.destroy();
+                            }
+                        }).data('kendoWindow').content($('#dlgTemplateChangePassword').html());
+        oWin212.center().open();
+    }
+    function setPassword_ChangePassword() {
+        var validator = $("#frmData").kendoValidator().data("kendoValidator");
+        if (!validator.validate()) return false;
+
+        var clsobj = {};
+        clsobj.nhanvienid = '@oPara.employee.id';
+        clsobj.password = $('#txtMatkhau').val();
+
+        $.ajax({
+            type: "POST",
+            url: "/permission/SaveOwnPassword",
+            data: JSON.stringify(clsobj),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                ss4.shwNotification('Đã thay đổi mật khẩu thành công.', 'info')
+                oWin212.destroy();
+            }
+        });
+    };
+    function closeWinChangePassword() { oWin212.destroy(); };
+</script>
+
+<!-- dialog -->
+<script id="dlgTemplateChangePassword" type="text/x-kendo-template">
+    <div id="dlgChangepassword">
+        <div class="demo-section k-content">
+            <div>
+                <!-- toolbar -->
+                <div id="toolbarDlg"></div>
+                <form id="frmData" action="javascript:void(0);" style="float:left;width:100%;">
+                    @*<input type="hidden" id="masterid" name="masterid" value="0" />*@
+                    <div class="modal-dialog" style="margin:0px;width:100%;">
+                        <div class="modal-body">
+                            <div class="container col-sm-12 col-md-12">
+                                <div class="row" style="margin-bottom:8px;">
+                                    <div class="col-sm-3 col-md-3">Mật khẩu&nbsp;&nbsp; </div>
+                                    <div class="col-sm-9 col-md-9">
+                                        <input type="password" id="txtMatkhau" name="txtMatkhau" class="k-textbox" placeholder="Mã khẩu" required validationMessage="Vui lòng nhập mật khẩu" style="width:100%;" />
+                                    </div>                                    
+                                </div>
+
+                                <div class="row" style="text-align: center;margin: 10px 0px;padding-top: 10px;border-top: 1px solid #ccc;">
+                                    <button class="k-button k-primary" onclick="setPassword_ChangePassword();">Lưu và đóng</button>
+                                    <button class="k-button k-primary" onclick="closeWinChangePassword();">Bỏ qua</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</script>

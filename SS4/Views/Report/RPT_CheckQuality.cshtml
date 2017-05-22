@@ -1,0 +1,554 @@
+﻿@{
+    ViewBag.Title = "BẢNG TÍNH SẢN LƯỢNG CHO TỔ KIỂM PHẨM";
+    string CurrDay = string.Format("0{0}", DateTime.Now.Day.ToString());
+    string CurrMonth = string.Format("0{0}", DateTime.Now.Month.ToString());
+    string CurrYear = DateTime.Now.Year.ToString();
+}
+
+<style>
+    .k-grid-header th.k-header,
+    .k-header .k-link {
+        text-align: center !important;
+    }
+
+    .k-grid-header th.k-header {
+        color: #101010;
+        padding: 3px 5px;
+    }
+    tr.groupbreak { background-color: #3f51b5 !important;height:5px!important; }
+    .grouppb { background-color: #f9f487 !important; }
+    .groupsec1 { background-color: #a6deb1!important; }
+    .groupsec2 { background-color: #a6afde!important; }
+    .grouptotal {
+        background-color: #f5f7f8 !important;
+        font-weight: bold;
+    }
+    
+
+    .clsSunday {
+        background-color: #ef4949 !important;
+    }
+
+    .clscenter {
+        text-align: center;
+    }
+
+    .clsleft {
+        text-align: left;
+    }
+
+    .clsright {
+        text-align: right;
+    }
+
+    .blackcolor {
+        color: #333;
+    }
+
+    #cbFNgay, #cbFThang, #cbFNam {
+        color: #333;
+        height: 27px;
+        border: none;
+        border-radius: 5px;
+    }
+</style>
+<script type="text/x-kendo-template" id="template">
+    <div class="toolbar">
+        <label class="category-label">Tháng năm:&nbsp;</label>
+        <select id="cbFThang">
+            <option value="01" @Html.Raw(CurrMonth.Substring(CurrMonth.Length - 2) == "01" ? "selected='selected'" : "")>Tháng 01</option>
+            <option value="02" @Html.Raw(CurrMonth.Substring(CurrMonth.Length - 2) == "02" ? "selected='selected'" : "")>Tháng 02</option>
+            <option value="03" @Html.Raw(CurrMonth.Substring(CurrMonth.Length - 2) == "03" ? "selected='selected'" : "")>Tháng 03</option>
+            <option value="04" @Html.Raw(CurrMonth.Substring(CurrMonth.Length - 2) == "04" ? "selected='selected'" : "")>Tháng 04</option>
+            <option value="05" @Html.Raw(CurrMonth.Substring(CurrMonth.Length - 2) == "05" ? "selected='selected'" : "")>Tháng 05</option>
+            <option value="06" @Html.Raw(CurrMonth.Substring(CurrMonth.Length - 2) == "06" ? "selected='selected'" : "")>Tháng 06</option>
+            <option value="07" @Html.Raw(CurrMonth.Substring(CurrMonth.Length - 2) == "07" ? "selected='selected'" : "")>Tháng 07</option>
+            <option value="08" @Html.Raw(CurrMonth.Substring(CurrMonth.Length - 2) == "08" ? "selected='selected'" : "")>Tháng 08</option>
+            <option value="09" @Html.Raw(CurrMonth.Substring(CurrMonth.Length - 2) == "09" ? "selected='selected'" : "")>Tháng 09</option>
+            <option value="10" @Html.Raw(CurrMonth.Substring(CurrMonth.Length - 2) == "10" ? "selected='selected'" : "")>Tháng 10</option>
+            <option value="11" @Html.Raw(CurrMonth.Substring(CurrMonth.Length - 2) == "11" ? "selected='selected'" : "")>Tháng 11</option>
+            <option value="12" @Html.Raw(CurrMonth.Substring(CurrMonth.Length - 2) == "12" ? "selected='selected'" : "")>Tháng 12</option>
+        </select>
+        <select id="cbFNam">
+            <option value="2016" @Html.Raw(CurrYear.Substring(CurrYear.Length - 2) == "2016" ? "selected='selected'" : "")>2016</option>
+            <option value="2017" @Html.Raw(CurrYear.Substring(CurrYear.Length - 2) == "2017" ? "selected='selected'" : "")>2017</option>
+            <option value="2018" @Html.Raw(CurrYear.Substring(CurrYear.Length - 2) == "2018" ? "selected='selected'" : "")>2018</option>
+            <option value="2019" @Html.Raw(CurrYear.Substring(CurrYear.Length - 2) == "2019" ? "selected='selected'" : "")>2019</option>
+            <option value="2020" @Html.Raw(CurrYear.Substring(CurrYear.Length - 2) == "2020" ? "selected='selected'" : "")>2020</option>
+        </select>
+        <button type="button" class="btn blackcolor btn-sm margin-right-5" id="btnXem">
+            <span class="glyphicon glyphicon-floppy-save margin-right-5" aria-hidden="true"></span> XEM
+        </button>
+    </div>
+</script>
+<div id="wrapperMain">
+
+    <!-- action buttons -->
+    <div class="subhead-collapse" style="height: 43px;">
+        <div class="subhead">
+            <div class="container-fluid">
+                <div id="container-collapse" class="container-collapse"></div>
+                <div class="row-fluid">
+                    <div class="col-sm-12">
+                        <div class="btn-toolbar" id="toolbar">
+
+                            <div class="btn-wrapper" id="toolbar-apply">
+@if (clsShared.checkPermission("print", "report", "rpt_checkquality"))
+{
+                                <button type="button" class="btn btn-primary btn-sm margin-right-5" style="position:absolute;right:0px;" data-bind="click: onClick_Print">
+                                    <span class="glyphicon glyphicon-print margin-right-5" aria-hidden="true"></span> PRINT
+                                </button>
+}
+@if (clsShared.checkPermission("excel", "report", "rpt_checkquality"))
+{
+                                <button type="button" class="btn btn-primary btn-sm" style="position:absolute;right:90px;" data-bind="click: onClick_Excel">
+                                    <span class="glyphicon glyphicon-download-alt margin-right-5" aria-hidden="true"></span> EXCEL
+                                </button>
+}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="wrapperContainer" style="height:100%">
+        <div class="wrapperGrid grid-section k-content wide">
+            <div>
+                <span id="notification"></span>
+                <div id="gridMain"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#breadcrumb').html('Báo cáo <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span> Bảng tính sản lượng cho tổ kiểm phẩm');
+        viewModel.onInitGrid();
+        kendo.bind($("#wrapperMain"), viewModel);
+
+        viewModel.resizeGrid();
+    });
+
+    var viewModel = kendo.observable({
+        isVisible: true,
+        selectedRow: null,
+        ModelEntity: function () { return kendo.observable({ data: {} }); },
+        data: null,
+        sTungay: null,
+        sDenngay: null,
+        sThang: '',
+        sNam: '',
+        //ultis
+        replaceStr: function (strInput, strOld, strNew) {
+            var s = strInput;
+            while (s.indexOf(strOld) != -1) {
+                s = s.replace(strOld, strNew);
+            }
+            return s;
+        },
+        //helper
+        getProductName: function (productid) {
+            for (var i = 0; i < arrProduct.length; i++) {
+                if (productid == arrProduct[i].id)
+                    return arrProduct[i].name;
+            }
+            return "";
+        },
+        getContName: function (contid) {
+            for (var i = 0; i < arrCont.length; i++) {
+                if (contid == arrCont[i].id)
+                    return arrCont[i].name;
+            }
+            return "";
+        },
+        getLineName: function (lineid) {
+            for (var i = 0; i < arrLine.length; i++) {
+                if (lineid == arrLine[i].id)
+                    return arrLine[i].name;
+            }
+            return "";
+        },
+
+        _dataSource: null,
+        getData: function (data) {
+            try {
+                var tmpData = [];
+                var arrO = Object.keys(data[0]);
+                var stt = 0, stt1 = 0;
+                var lineid = 0, lineid1 = 0;
+                for (var i = 0; i < data.length; i++) {
+                    var oItem = {};
+                    if (lineid != data[i]["lineid"] && data[i]['stt'] == 1) {
+                        stt = 0;
+                        lineid = data[i]["lineid"];
+                    }
+                    if (lineid1 != data[i]["lineid"] && data[i]['stt'] == 5) {
+                        stt1 = 0;
+                        lineid1 = data[i]["lineid"];
+                    }
+
+                    oItem['stt'] = data[i]['stt'];
+                    oItem['employeeid'] = data[i]["employeeid"];
+                    oItem['lineid'] = data[i]["lineid"];
+                    oItem['linename'] = data[i]["linename"];
+                    oItem['fullname'] = data[i]["fullname"];
+                    oItem['Total'] = 0;
+
+                    if (data[i]['stt'] == 1) {
+                        stt++;
+                        oItem['astt'] = stt;
+                    }
+                    if (data[i]['stt'] == 5) {
+                        stt1++;
+                        oItem['astt'] = stt1;
+                    }
+
+                    for (var j = 0; j < arrO.length; j++) {
+                        if (arrO[j] != "stt" && arrO[j] != "employeeid" &&
+                            arrO[j] != "lineid" &&
+                            arrO[j] != "linename" &&
+                            arrO[j] != "fullname" && arrO[j] != "linestt") {
+                            //if (data[i]["stt"] == 999) oItem['s' + arrO[j]] = ".";
+                            //else {
+                            if (data[i][arrO[j]] != null) {
+                                oItem['s' + arrO[j]] = parseFloat(data[i][arrO[j]].toString());                                
+                                oItem['Total'] = oItem['Total'] + parseFloat(data[i][arrO[j]].toString());                                                              
+                            }
+                            else {
+                                oItem['s' + arrO[j]] = data[i][arrO[j]] ? parseFloat(data[i][arrO[j]].toString()) : "";
+                                if (data[i][arrO[j]])
+                                    oItem['Total'] = oItem['Total'] + parseFloat(data[i][arrO[j]].toString());
+                            }
+                            //}
+                        }
+                    }
+                    tmpData.push(oItem);
+                }
+                return tmpData;
+            } catch (e) { this.onInitGrid(); }
+        },
+        onInitGrid: function () {
+            var thisObj = this;
+            if (thisObj.sTungay == null) {
+                var now = new Date();
+                var thang = now.getMonth() + 1 < 10 ? '0' + (now.getMonth() + 1).toString() : (now.getMonth() + 1).toString();
+                var nam = now.getFullYear().toString();
+                var ngay = now.getDate() < 10 ? '0' + (now.getDate()).toString() : (now.getDate()).toString();
+                thisObj.sTungay = ngay + '/' + thang + '/' + nam;
+                thisObj.sDenngay = ngay + '/' + thang + '/' + nam;
+                thisObj.sThang = thang;
+                thisObj.sNam = nam;
+            }
+
+            //this.onRefresh();
+            $("#gridMain").kendoGrid({
+                toolbar: kendo.template($("#template").html()),
+                //dataSource: JsonGd,
+                navigatable: true,
+                groupable: false,
+                sortable: false,
+                resizable: true,
+                reorderable: false,
+                pageable: false,
+                columnMenu: false,
+                editable: true,
+                columns: [
+                    {
+                        field: "s",
+                        title: "STT",
+                        width: 240,
+                        locked: true,
+                        lockable: false
+                    }, {
+                        field: "hs",
+                        title: "Họ tên",
+                        width: 80,
+                        locked: true,
+                        lockable: false
+                    }, { title: "Ngày 01" }
+                    , { title: "Ngày 02" }
+                    , { title: "Ngày 03" }
+                    , { title: "Ngày 04" }
+                    , { title: "Ngày 05" }
+                ]
+            });
+
+
+            $('#btnXem').click(function () {
+                thisObj.onRefresh();
+            });
+            $('#cbFThang').val(thisObj.sThang);
+            $('#cbFNam').val(thisObj.sNam);
+        },
+        onRefresh: function () {
+            var thisObj = this;
+            thisObj.sThang = $('#cbFThang').val();
+            thisObj.sNam = $('#cbFNam').val();
+
+            var grid = $("#gridMain").data("kendoGrid");
+            grid.destroy();
+            $("#gridMain").html('');
+
+            clsApi.request('/Report/RPT_CheckQuality_Data', function (res) {
+                thisObj.data = thisObj.getData(res);
+                var JsonGd = new kendo.data.DataSource({ transport: { read: function (options) { options.success(thisObj.data); } } });
+                var cols = [];
+                var colTmp = [];
+                cols.push({
+                    field: "astt",
+                    title: "STT",
+                    width: 50,
+                    attributes: { class: "clscenter" },
+                    locked: true,
+                    lockable: false
+                }, {
+                    field: "fullname",
+                    title: "Thông tin diễn giải",
+                    width: 260,
+                    attributes: { class: "clsleft" },
+                    locked: true,
+                    lockable: false
+                });
+                var arrO = Object.keys(thisObj.data[0]);
+                for (var i = 0; i < arrO.length; i++) {
+                    if (arrO[i] != "Total" && arrO[i] != "stt" && arrO[i] != "employeeid" && arrO[i] != "lineid" && arrO[i] != "linename" && arrO[i] != "fullname") {
+                        cols.push({
+                            title: arrO[i].replace('s', ''), field: arrO[i], width: 80, attributes: { class: 'clsright' }, //format: "{0:n1}"
+                        });
+                    }
+                }
+                //add column total
+                cols.push({
+                    title: 'Total', field: 'Total', width: 80, attributes: { class: 'clsright' }, template: function (model) { if (model.stt == 6||model.stt==0||model.stt==4) return ''; return parseFloat(model.Total).formatMoney(1, '.', ','); }//, format: "{0:n1}"
+                });
+
+                function SortArray(a, b) {
+                    if (a.field < b.field) return -1;
+                    else if (a.field > b.field) return 1;
+                    else return 0;
+                }
+                $("#gridMain").kendoGrid({
+                    toolbar: kendo.template($("#template").html()),
+                    dataSource: JsonGd,
+                    //height: 540,
+                    navigatable: true,
+                    groupable: false,
+                    sortable: false,
+                    resizable: true,
+                    reorderable: false,
+                    pageable: false,
+                    columnMenu: false,
+                    editable: false,
+                    columns: cols.sort(SortArray),
+                    //columns: cols,
+                    dataBound: function (e) {
+                        var rows = e.sender.tbody.children();
+                        for (var j = 0; j < rows.length; j++) {
+                            var row = $(rows[j]);
+                            var dataItem = e.sender.dataItem(row);
+                            var group = dataItem.get("stt");
+                            if (group == 0 || group == 4) {
+                                row.addClass("grouptotal");
+                                var id = $(row).attr('data-uid');
+                                $('div.k-grid-content-locked table.k-selectable tr[data-uid="' + id + '"]').addClass('groupsec1');
+                                $('div.k-grid-content-locked table tr[data-uid="' + id + '"]').addClass('groupsec1');
+
+                                $('tr[data-uid="' + id + '"] td.clsright').each(function () {
+                                    if ($(this).html() == "") $(this).html('.');
+                                });
+                            }
+                            if (group == 2 || group == 3) {
+                                var id = $(row).attr('data-uid');
+                                $('div.k-grid-content-locked table.k-selectable tr[data-uid="' + id + '"]').addClass('grouppb');
+                                $('div.k-grid-content-locked table tr[data-uid="' + id + '"]').addClass('grouppb');                                
+                            }
+                            if (group == 1 || group == 2) {
+                                var id = $(row).attr('data-uid');
+                                $('tr[data-uid="' + id + '"] td.clsright').each(function () {
+                                    if ($(this).html() != "") {
+                                        $(this).html($(this).html() + "%");
+                                    }
+                                })
+                            }
+                            if (group == 6) {
+                                row.addClass("groupbreak");
+                                var id = $(row).attr('data-uid');
+                                $('div.k-grid-content-locked table.k-selectable tr[data-uid="' + id + '"]').addClass('groupbreak');
+                                $('div.k-grid-content-locked table tr[data-uid="' + id + '"]').addClass('groupbreak');
+                            }                                                     
+                        }
+                    },
+                    excelExport: function (e) {
+                        var orgData = $('#gridMain').data('kendoGrid').dataSource._data;
+                        var iFormatGroup = [];
+                        var iFormatTotal = [];
+                        var iFormatBreak = [];
+                        var iPercent = [];
+                        for (var i = 0; i < orgData.length; i++) {
+                            if (orgData[i].stt == 0 || orgData[i].stt == 4) {
+                                iFormatGroup.push(i+1);
+                            }
+                            if (orgData[i].stt == 2 || orgData[i].stt == 3) {
+                                iFormatTotal.push(i+1);
+                            }
+                            if (orgData[i].stt == 6) {
+                                iFormatBreak.push(i+1);
+                            }
+                            if (orgData[i].stt == 2 || orgData[i].stt == 1) {
+                                iPercent.push(i + 1);
+                            }
+                        }
+
+                        var sheet = e.workbook.sheets[0];
+                        for (var i = 0; i < sheet.rows.length; i++) {
+                            var bHasGroup = false, bHasTotal = false, bBreak = false, bPercent = false;
+                            if (iFormatGroup.indexOf(i) != -1) bHasGroup = true;
+                            if (iFormatTotal.indexOf(i) != -1) bHasTotal = true;
+                            if (iFormatBreak.indexOf(i) != -1) bBreak = true;
+                            if (iPercent.indexOf(i) != -1) bPercent = true;
+
+                            for (var ci = 0; ci < sheet.rows[i].cells.length; ci++) {
+                                if (bHasGroup) {
+                                    sheet.rows[i].cells[0].background = '#a6deb1';
+                                    sheet.rows[i].cells[1].background = '#a6deb1';
+                                }
+                                if (bHasTotal) {
+                                    sheet.rows[i].cells[0].background = '#f9f487';
+                                    sheet.rows[i].cells[1].background = '#f9f487';
+                                }
+                                if (bBreak) {
+                                    sheet.rows[i].cells[ci].background = '#fff';
+                                    sheet.rows[i].cells[ci].value = '';
+                                    sheet.rows[i].cells[ci].fontSize = 1;
+                                    sheet.rows[i].fontSize = 1;
+                                }
+                                if (bPercent) {
+                                    if (!isNaN(sheet.rows[i].cells[ci].value) && sheet.rows[i].cells[ci].value != '' && i != 0 && ci != 0) {
+                                        sheet.rows[i].cells[ci].value = parseFloat(sheet.rows[i].cells[ci].value).formatMoney(1, '.', ',') + ' %';
+                                        sheet.rows[i].cells[ci].hAlign = "right";
+                                        sheet.rows[i].cells[ci].vAlign = "center";
+                                    }
+                                } else {
+                                    if (!isNaN(sheet.rows[i].cells[ci].value) && sheet.rows[i].cells[ci].value != '' && i != 0 && ci != 0) {
+                                        sheet.rows[i].cells[ci].value = parseFloat(sheet.rows[i].cells[ci].value).formatMoney(1, '.', ',');
+                                        sheet.rows[i].cells[ci].hAlign = "right";
+                                        sheet.rows[i].cells[ci].vAlign = "center";
+                                    }
+                                }
+
+                                if (bBreak || bHasGroup)
+                                    sheet.rows[i].cells[2].value = "";
+                                //if (!isNaN(sheet.rows[i].cells[ci].value) && sheet.rows[i].cells[ci].value != '' && i!=0 && ci!=0) {
+                                //    sheet.rows[i].cells[ci].value = parseFloat(sheet.rows[i].cells[ci].value).formatMoney(1, '.', ',') + ' %';
+                                //    sheet.rows[i].cells[ci].hAlign = "right";
+                                //    sheet.rows[i].cells[ci].vAlign = "center";
+                                //}
+                                if (ci == 0) {
+                                    sheet.rows[i].cells[ci].hAlign = "center";
+                                    sheet.rows[i].cells[ci].vAlign = "center";
+                                }
+
+                                sheet.rows[i].cells[ci].borderBottom = { color: "#333", size: 1 };
+                                sheet.rows[i].cells[ci].borderTop = { color: "#333", size: 1 };
+                                sheet.rows[i].cells[ci].borderLeft = { color: "#333", size: 1 };
+                                sheet.rows[i].cells[ci].borderRight = { color: "#333", size: 1 };
+                                if (i == 0) {
+                                    sheet.rows[i].cells[ci].background = "#f5f7f8";
+                                    sheet.rows[i].cells[ci].hAlign = "center";
+                                    sheet.rows[i].cells[ci].vAlign = "center";
+                                    sheet.rows[i].cells[ci].color = "#333";
+                                }
+                            }
+                        }
+                        
+                    },
+                });
+
+                $('#cbFThang').val(thisObj.sThang);
+                $('#cbFNam').val(thisObj.sNam);
+                setTimeout(function () { thisObj.resizeGrid(); $("#gridMain").data('kendoGrid').refresh() }, 200);
+
+                $('#btnXem').unbind('click');
+                $('#btnXem').click(function () {
+                    thisObj.onRefresh();
+                });
+            }, function () {
+                thisObj.onInitGrid();
+            }, {
+                data: { thang: thisObj.sThang, nam: thisObj.sNam }
+            });
+        },
+        resizeGrid: function () {
+            var gridElement = $(".wrapperGrid"),
+                dataArea = gridElement.find(".k-grid-content"),
+                gridHeight = gridElement.innerHeight(),
+                otherElements = gridElement.children().not(".k-grid-content"),
+                otherElementsHeight = 0;
+            otherElements.each(function () {
+                otherElementsHeight += $(this).outerHeight();
+            });
+            dataArea.height(ss4.Screen().height - (parseInt($('.navContainer').css('height')) + parseInt($('.header').css('height')) + parseInt($('.subhead-collapse').css('height')) + 130));
+        },
+        onClick_Excel: function () {
+            var grid = $("#gridMain").data("kendoGrid");
+            grid.saveAsExcel();
+        },
+        onClick_Print: function () {
+            var gridElement = $('#gridMain'),
+            printableContent = '',
+            win = window.open('', '', 'width=800, height=500, resizable=1, scrollbars=1'),
+            doc = win.document.open();
+
+            var htmlStart =
+                    '<!DOCTYPE html>' +
+                    '<html>' +
+                    '<head>' +
+                    '<meta charset="utf-8" />' +
+                    '<title>Bảng kiểm tra hằng ngày</title>' +
+                    '<link href="/Content/libs/kendo/css/2016.1.112/kendo.common.min.css" rel="stylesheet" /> ' +
+                    '<style>' +
+                    'html { font: 11pt sans-serif; }' +
+                    '.k-grid { border-top-width: 0; }' +
+                    '.k-grid, .k-grid-content { height: auto !important; }' +
+                    '.k-grid-content { overflow: visible !important; }' +
+                    'div.k-grid table { table-layout: auto; width: 100% !important; }' +
+                    '.k-grid .k-grid-header th { border-top: 1px solid; }' +
+                    '.k-grouping-header, .k-grid-toolbar, .k-grid-pager > .k-link { display: none; }' +
+                    // '.k-grid-pager { display: none; }' + // optional: hide the whole pager
+                    '</style>' +
+                    '</head>' +
+                    '<body>';
+
+            var htmlEnd =
+                    '</body>' +
+                    '</html>';
+
+            var gridHeader = gridElement.children('.k-grid-header');
+            if (gridHeader[0]) {
+                var thead = gridHeader.find('thead').clone().addClass('k-grid-header');
+                printableContent = gridElement
+                    .clone()
+                        .children('.k-grid-header').remove()
+                    .end()
+                        .children('.k-grid-content')
+                            .find('table')
+                                .first()
+                                    .children('tbody').before(thead)
+                                .end()
+                            .end()
+                        .end()
+                    .end()[0].outerHTML;
+            } else {
+                printableContent = gridElement.clone()[0].outerHTML;
+            }
+
+            doc.write(htmlStart + printableContent + htmlEnd);
+            doc.close();
+            win.print();
+        }
+    });
+</script>

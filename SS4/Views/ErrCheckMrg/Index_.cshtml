@@ -1,0 +1,290 @@
+﻿@{
+    ViewBag.Title = "NHẬP LỖI CỦA PHÒNG QC";
+}
+<script type="text/javascript">    
+    var arrLine = @Html.Raw(new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(ViewData["tblLine"]));    
+</script>
+<div id="wrapperMain">
+    <!-- action buttons -->
+    <div class="subhead-collapse" style="height: 43px;">
+        <div class="subhead">
+            <div class="container-fluid">
+                <div id="container-collapse" class="container-collapse"></div>
+                <div class="row-fluid">
+                    <div class="col-sm-12">
+                        <div class="btn-toolbar" id="toolbar">
+                            <div class="btn-wrapper" id="toolbar-apply">
+                                @if (clsShared.checkPermission("them", "errcheckmrg", "index"))
+                                {
+                                <button type="button" class="btn btn-primary btn-sm margin-right-5" data-bind="click: onClick_Add">
+                                    <span class="glyphicon glyphicon-plus margin-right-5" aria-hidden="true"></span> THÊM
+                                </button>
+                                }
+@if (clsShared.checkPermission("xoa", "errcheckmrg", "index"))
+{
+                                <button type="button" class="btn btn-primary btn-sm margin-right-5" data-bind="click: onClick_Remove">
+                                    <span class="glyphicon glyphicon-remove margin-right-5" aria-hidden="true"></span> XÓA
+                                </button>
+}
+@if (clsShared.checkPermission("them", "errcheckmrg", "index") || clsShared.checkPermission("sua", "errcheckmrg", "index"))
+{
+                                <button type="button" class="btn btn-primary btn-sm margin-right-5" data-bind="click: onClick_Save">
+                                    <span class="glyphicon glyphicon-floppy-save margin-right-5" aria-hidden="true"></span> LƯU
+                                </button>
+}
+@if (clsShared.checkPermission("print", "errcheckmrg", "index"))
+{
+                                <button type="button" class="btn btn-primary btn-sm margin-right-5" style="position:absolute;right:0px;">
+                                    <span class="glyphicon glyphicon-print margin-right-5" aria-hidden="true"></span> PRINT
+                                </button>
+}
+@if (clsShared.checkPermission("excel", "errcheckmrg", "index"))
+{
+                                <button type="button" class="btn btn-primary btn-sm" style="position:absolute;right:90px;">
+                                    <span class="glyphicon glyphicon-download-alt margin-right-5" aria-hidden="true"></span> EXCEL
+                                </button>
+}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="wrapperContainer" style="height:100%">
+        <div class="wrapperGrid grid-section k-content wide">
+            <div>
+                <span id="notification"></span>
+                <div data-role="grid"
+                     @if (clsShared.checkPermission("them", "errcheckmrg", "index") || clsShared.checkPermission("sua", "errcheckmrg", "index"))
+                     {
+                         <text>
+                     data-editable="true"
+                     </text>
+                     }
+                     data-sortable="true"
+                     data-selectable="true"
+                     data-autoBind="false"
+                     data-scrollable="true"
+                     data-resizable="true"
+                     data-reorderable="true"
+                     data-columnMenu="true"
+                     data-groupable="false"
+                     data-height="auto"
+                     data-navigatable="true"
+                     @*data-mobile="phone"*@
+                     data-filterable='{"extra":false,"messages":{"info":"Hiển thị dữ liệu:","filter":"Lọc","clear":"Bỏ lọc","isTrue":"True","isFalse":"False","and":"Và","or":"Hoặc"},"operators":{"string":{"contains":"Lọc gần đúng","eq":"Lọc chính xác","neq":"Tất cả trừ"},"number":{"eq":"Bằng","neq":"Khác","gte":"Lớn hơn bằng","gt":"Lớn hơn","lte":"Nhỏ hơn bằng","lt":"Nhỏ hơn"},"date":{"eq":"Tìm chính xác","neq":"Khác ngày","gte":"Lớn hơn bằng","gt":"Lớn hơn","lte":"Nhỏ hơn bằng","lt":"Nhỏ hơn"}}}'
+                     data-pageable='{"refresh":true,"pageSize": 10, "pageSizes":true,"messages":{"display":"{0} - {1} / {2} dòng","empty":"Không có dữ liệu","page":"Trang","of":"của {0}","itemsPerPage":"","first":"Trang đầu","previous":"Trang trước","next":"Trang kế","last":"Trang cuối","refresh":"Làm mới"}}'
+                     data-columns="[
+                            { 'field': 'line', 'title': 'Số Line', 'width': 270, editor: LineEditor, template: LineView, attributes:{style:'text-align:left;'} },
+                            { 'field': 'p1d', 'title': 'Ngày kiểm', editor: ngaySXEditor, template: ngaySXView, 'width': 270 },
+                            { 'field': 'sl', 'title': 'Số lượng sai', template: function(model){ return kendo.toString(model.sl, 'n0'); }  }
+                     ]"
+                     data-bind="visible: isVisible,
+                                source: dataSource,
+                                events: {
+                                    save: onDebug,
+                                    change: onChangeRow,
+                                    dataBound: dataBound
+                                }"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function ngaySXEditor(container, options) {
+        $('<input required name="' + options.field + '"/>')
+            .appendTo(container)
+            .kendoDatePicker({
+                parseFormats: ["dd/MM/yyyy"],
+                format: "dd/MM/yyyy",
+                value: new Date(),
+                min: new Date(1950, 0, 1),
+                max: new Date(2049, 11, 31)
+            });
+    };
+    function ngaySXView(model) {
+        try {
+            if (model.p1d != null) model.scheckdate = ss4.dateToString(model.p1d);
+            else model.p1d = ss4.parse_ddMMyyyy(model.scheckdate);
+            return model.scheckdate;
+        } catch (e) { return ''; }
+    };
+    function LineEditor(container, options) {
+        var o = $('<input required name="' + options.field + '"/>')
+            .appendTo(container)
+            .kendoDropDownList({
+                autoBind: false,
+                dataTextField: "name",
+                dataValueField: "id",
+                dataSource: {
+                    data: arrLine
+                },
+            });
+        $(o).data('kendoDropDownList').value(options.model.line);
+    };
+    function LineView(model) {
+        for (var i = 0; i < arrLine.length; i++) {
+            if (model.line == arrLine[i].id)
+                return arrLine[i].name;
+        }
+        return '';
+    };
+
+    var viewModel = kendo.observable({
+        isVisible: true,
+        selectedRow: null,
+        ModelEntity: function () { return kendo.observable({ data: {} }); },
+
+        onDebug: function (e) { console.log("event :: save(" + kendo.stringify(e.values, null, 4) + ")"); },
+        dataSource: new kendo.data.DataSource({
+            schema: {
+                model: {
+                    id: "id",
+                    fields: {
+                        scheckdate: { type: "string", editable: true },
+                        p1d: { type: "date", editable: true },
+                        line: { type: "number", editable: true, format: "{##,#}" },
+                        sl: { type: "number", editable: true, format: "{##,#}" },
+                    }
+                },
+                data: "data",
+                total: "total"
+            },
+            batch: true,
+            pageSize: 100,
+            transport: {
+                read: {
+                    url: "/ErrCheckMrg/getAll",
+                    type: "POST",
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    cache: true,
+                    complete: function (data, status) { }
+                },
+                create: {
+                    url: "/ErrCheckMrg/CreateOrUpdate",
+                    type: "POST",
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    complete: function (e) {
+                        if (!e.err) {
+                            $(".k-pager-refresh").trigger('click');
+                            ss4.shwNotification('Thêm dữ liệu thành công!', 'info');
+                        }
+                        else ss4.shwNotification(e.msg, 'error');
+                    }
+                },
+                update: {
+                    url: "/ErrCheckMrg/CreateOrUpdate",
+                    type: "POST",
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    complete: function (e) {
+                        if (!e.err) ss4.shwNotification('Cập nhật dữ liệu thành công!', 'info');
+                        else ss4.shwNotification(e.msg, 'error');
+                    }
+                },
+                destroy: {
+                    url: "/ErrCheckMrg/destroy",
+                    type: "POST",
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    complete: function (e) {
+                        if (!e.err) ss4.shwNotification('Cập nhật dữ liệu thành công!', 'info');
+                        else ss4.shwNotification(e.msg, 'error');
+                    }
+                },
+                parameterMap: function (options, operation) {
+                    if (operation !== "read" && options.models) {
+                        return kendo.stringify(options);
+                    }
+                }
+            }
+        }),
+        dataBound: function (e) {
+            for (var i = 0; i < this.dataSource._data; i++) {
+                this.dataSource._data[i].p1d = ss4.parse_ddMMyyyy(this.dataSource._data[i].scheckdate);
+            }
+        },
+        detailInit: function (e) {
+            //var grid = e.sender;
+            //console.log(grid);
+        },
+        raddcur: null,
+        onClick_Add: function () {
+            if (this.raddcur != null) {
+                if (this.raddcur.scheckdate == '') {
+                    $('tr[data-uid=' + this.raddcur.uid + '] td:first-child').click();
+                    ss4.alert({ title: 'Thông báo', message: 'Vui lòng nhập ngày và thực hiện lại!!!', width: 300, height: 150, icon: 'info', time: 5000 });
+                    return false;
+                }
+            }
+            var o = new this.dataSource.reader.model();
+            this.raddcur = o;
+            this.dataSource.add(o);
+            $('tr[data-uid=' + o.uid + '] td:first-child').click();
+        },
+
+        onClick_Remove: function () {
+            var thisObj = this;
+            if (this.selectedRow != null) {
+                ss4.confirm({
+                    title: 'Confirm', message: 'Bạn có chắc muốn ngày "' + this.selectedRow.scheckdate + ', số Line '+ this.selectedRow.line  +'" ?', width: 300, height: 150, icon: 'info',
+                    fnCallback: function () {
+                        thisObj.dataSource.remove(thisObj.selectedRow);
+                        thisObj.dataSource.sync();
+                    }
+                });
+            } else {
+                ss4.alert({ title: 'Thông báo', message: 'Vui lòng chọn một dòng và bấm nút xóa!!!', width: 300, height: 150, icon: 'info', time: 5000 });
+            }
+        },
+
+        onClick_Save: function () {
+            //check exists key??
+            var arrData = viewModel.dataSource._data;
+            var arrCodeExist = [];
+            for (var i = 0; i < arrData.length; i++) {
+                var iExist = 0;
+                if (arrData[i].scheckdate == '') {
+                    ss4.confirm({ title: 'Thông báo', message: 'Ngày kiểm không thể là rỗng!!', width: 300, height: 150, icon: 'info' });
+                    return false;
+                }
+                for (var j = 0; j < arrData.length; j++) {
+                    if (arrData[i].scheckdate == arrData[j].scheckdate && arrData[i].line == arrData[j].line) {
+                        iExist += 1;
+                    }
+                }
+                if (iExist > 1) {
+                    arrCodeExist.push(arrData[i].scheckdate);
+                }
+            }
+
+            if (arrCodeExist.length == 0)
+                this.dataSource.sync();
+            else {
+                var sError = '';
+                for (var i = 0; i < arrCodeExist.length; i++) {
+                    if (sError == '') sError = '<strong>Dòng ' + (i + 1).toString() + ': ' + arrCodeExist[i] + '</strong><br>';
+                    else sError += ',' + '<strong>Dòng ' + (i + 1).toString() + ': ' + arrCodeExist[i] + '</strong><br>';
+                }
+
+                ss4.confirm({ title: 'Thông báo', message: 'Vui lòng kiểm tra lại các ngày kiểm sau<br>' + sError, width: 300, height: 150, icon: 'info' });
+            }
+        },
+
+        onChangeRow: function (eventArgs) {
+            this.set("selectedRow", eventArgs.sender.dataItem(eventArgs.sender.select()));
+        },
+    });
+    $(document).ready(function () {
+        $('#breadcrumb').html('Phòng QC <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span> Đánh giá lỗi');
+        kendo.bind($("#wrapperMain"), viewModel);
+
+        ss4.resizeGrid();
+    });
+</script>

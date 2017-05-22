@@ -1,0 +1,276 @@
+﻿@{
+    ViewBag.Title = "Danh mục sản phẩm";
+}
+<style>
+    label.lblCustom input[type="file"] {
+        position: fixed;
+        top: -1000px;
+    }
+
+    .lblCustom, .lblCustom1 {
+        border: 1px solid#AAA;
+        border-radius: 4px;
+        padding: 2px 5px;
+        margin: 2px;
+        background: #E0ECFF;
+        display: inline-block;
+        text-align: center;
+        width: 138px;
+    }
+
+    .lblCustom1 {
+        border: none;
+        padding: 0px;
+    }
+
+    .lblCustom:hover {
+        background: #CCC;
+    }
+
+    .lblCustom:active {
+        background: #CCF;
+    }
+
+    .lblCustom :invalid + span,
+    .lblCustom1 :invalid + span {
+        color: #333;
+    }
+
+    .lblCustom :valid + span,
+    .lblCustom :valid + span {
+        color: #333;
+    }
+</style>
+<script src="~/Content/libs/kendo/js/xlsx.js"></script>
+<script src="~/Content/js/model/productModel.js"></script>
+<div id="wrapperMain">
+    <!-- action buttons -->
+    <div class="subhead-collapse" style="height: 43px;">
+        <div class="subhead">
+            <div class="container-fluid">
+                <div id="container-collapse" class="container-collapse"></div>
+                <div class="row-fluid">
+                    <div class="col-sm-12">
+                        <div class="btn-toolbar" id="toolbar">
+                            <div class="btn-wrapper" id="toolbar-apply">
+                                @if (clsShared.checkPermission("them", "product", "index"))
+                                {
+                                <button type="button" class="btn btn-primary btn-sm margin-right-5" data-bind="click: onClick_Add">
+                                    <span class="glyphicon glyphicon-plus margin-right-5" aria-hidden="true"></span> THÊM
+                                </button>
+                                }
+@if (clsShared.checkPermission("xoa", "product", "index"))
+{
+                                <button type="button" class="btn btn-primary btn-sm margin-right-5" data-bind="click: onClick_Remove">
+                                    <span class="glyphicon glyphicon-remove margin-right-5" aria-hidden="true"></span> XÓA
+                                </button>
+}
+@if (clsShared.checkPermission("them", "product", "index") || clsShared.checkPermission("sua", "product", "index"))
+{
+                                <button type="button" class="btn btn-primary btn-sm margin-right-5" data-bind="click: onClick_Save">
+                                    <span class="glyphicon glyphicon-floppy-save margin-right-5" aria-hidden="true"></span> LƯU
+                                </button>
+}
+@if (clsShared.checkPermission("them", "product", "index"))
+{
+                                <button type="button" class="btn btn-primary btn-sm margin-right-5" data-bind="click: onClick_Import">
+                                    <span class="glyphicon glyphicon-floppy-save margin-right-5" aria-hidden="true"></span> IMPORT
+                                </button>
+}
+@if (clsShared.checkPermission("print", "product", "index"))
+{
+                                <button type="button" class="btn btn-primary btn-sm margin-right-5" style="position:absolute;right:0px;">
+                                    <span class="glyphicon glyphicon-print margin-right-5" aria-hidden="true"></span> PRINT
+                                </button>
+}
+
+                                <button type="button" onclick="location.href='/Content/texcel/TSanPham.xlsx'" class="btn btn-primary btn-sm" style="position:absolute;right:180px;">
+                                    <span class="glyphicon glyphicon-download-alt margin-right-5" aria-hidden="true"></span> BIỂU MẪU
+                                </button>
+@if (clsShared.checkPermission("excel", "product", "index"))
+{
+                                <button type="button" class="btn btn-primary btn-sm" style="position:absolute;right:90px;">
+                                    <span class="glyphicon glyphicon-download-alt margin-right-5" aria-hidden="true"></span> EXCEL
+                                </button>
+}
+
+                                <input type="file" accept=".xls,.xlsx" id="fileUpload" name="fileUpload" style="display:none;" />
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="wrapperContainer" style="height:100%">
+        <div class="wrapperGrid grid-section k-content wide">
+            <div>
+                <span id="notification"></span>
+                <div data-role="grid"
+                     @if (clsShared.checkPermission("them", "product", "index") || clsShared.checkPermission("sua", "product", "index"))
+                     {
+                         <text>
+                     data-editable="true"
+                     </text>
+                     }
+                     data-sortable="true"
+                     data-selectable="true"
+                     data-autoBind="false"
+                     data-scrollable="true"
+                     data-resizable="true"
+                     data-reorderable="true"
+                     data-columnMenu="true"
+                     data-groupable="false"
+                     data-height="auto"
+                     data-navigatable="true"
+                     @*data-mobile="phone"*@
+                     data-filterable='{"extra":false,"messages":{"info":"Hiển thị dữ liệu:","filter":"Lọc","clear":"Bỏ lọc","isTrue":"True","isFalse":"False","and":"Và","or":"Hoặc"},"operators":{"string":{"contains":"Lọc gần đúng","eq":"Lọc chính xác","neq":"Tất cả trừ"},"number":{"eq":"Bằng","neq":"Khác","gte":"Lớn hơn bằng","gt":"Lớn hơn","lte":"Nhỏ hơn bằng","lt":"Nhỏ hơn"},"date":{"eq":"Tìm chính xác","neq":"Khác ngày","gte":"Lớn hơn bằng","gt":"Lớn hơn","lte":"Nhỏ hơn bằng","lt":"Nhỏ hơn"}}}'
+                     data-pageable='{"refresh":true,"pageSize": 10, "pageSizes":true,"messages":{"display":"{0} - {1} / {2} dòng","empty":"Không có dữ liệu","page":"Trang","of":"của {0}","itemsPerPage":"","first":"Trang đầu","previous":"Trang trước","next":"Trang kế","last":"Trang cuối","refresh":"Làm mới"}}'
+                     data-columns="[
+                            { 'field': 'name', 'title': 'Mã sản phẩm', 'width': 180 },
+                            { 'field': 'p1', 'title': 'Tên sản phẩm' },
+                            { 'field': 'p2checkbox', 'title': 'Lớn hơn (1000mm)', width: 200,editor: checkboxEditor, template: checkboxView, attributes:{style:'text-align:center;'} },
+                            { 'field': 'p3numeric', 'title': 'Hệ số', width: 200,editor: hesoEditor, template: hesoView, attributes:{style:'text-align:right;'}  },
+
+                     ]"
+                     data-bind="visible: isVisible,
+                                source: dataSource,
+
+                                events: {
+                                    save: onDebug,
+                                    change: onChangeRow,
+                                    dataBound: dataBound
+                                }"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    //IMPORT
+    var X = XLSX;
+    function ToJson(workbook) {
+        var result = {};
+        workbook.SheetNames.forEach(function (sheetName) {
+            var roa = X.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+            if (roa.length > 0) {
+                result[sheetName] = roa;
+            }
+        });
+        return result;
+    }
+
+    var arrImportData = [];
+    //event FileUpload
+    $('#fileUpload').change(function (e) {
+        //Thaco.shwProgress(true, { title: 'Đợi trong giây lát', msg: 'Đang xử lý dữ liệu...', interval: 3000 });
+        var fileName = $(this).val(); fileName = fileName.substring(fileName.lastIndexOf('\\') + 1); fileName += ss4.getSizeUpload('fileUpload'); $('#fileNameCV').html(fileName);
+        var files = e.target.files;
+        var i, f;
+        for (i = 0, f = files[i]; i != files.length; ++i) {
+            var reader = new FileReader();
+            var name = f.name;
+            reader.onload = function (e) {
+                var data = e.target.result;
+
+                var workbook = XLSX.read(data, { type: 'binary' });
+                arrImport = {};
+                arrImport = ToJson(workbook);
+                arrImport = arrImport.Sheet1;
+
+                var arrResult = [];
+                for (var i = 1; i < arrImport.length; i++) {
+                    arrImport[i].masp = arrImport[i]['1'];
+                    arrImport[i].tensp = arrImport[i]['2'];
+                    arrImport[i].blonhon1000 = arrImport[i]['3'];
+                    arrImport[i].heso = arrImport[i]['4'];
+
+                    arrImportData.push(arrImport[i]);
+                }
+                //arrImportData = arrImport;
+                console.log(arrImportData);
+                shwDialogImport();
+            };
+            reader.readAsBinaryString(f);
+        }
+    });
+
+    function doSaveImport() {
+        //arrImport[i].masp = arrImport[i]['1'];
+        //arrImport[i].tensp = arrImport[i]['2'];
+        //arrImport[i].blonhon1000 = arrImport[i]['3'];
+        //arrImport[i].heso = arrImport[i]['4'];
+        var arrResult = [];
+        for (var i = 0; i < arrImportData.length; i++) {
+            arrResult.push({
+                name: arrImportData[i].masp,
+                p1: arrImportData[i].tensp,
+                p2: arrImportData[i].blonhon1000,
+                p3: arrImportData[i].heso,
+            });
+        }
+        if (arrResult.length != 0) {
+            $.ajax({
+                url: "/product/Import",
+                data: JSON.stringify({ models: arrResult }),
+                dataType: 'json',
+                type: 'Post',
+                contentType: "application/json; charset=utf-8",
+                success: function (res) {
+                    location.reload();
+                },
+                error: function () { }
+            });
+        }
+        
+    }
+    var oWin = null;
+    function shwDialogImport() {
+        oWin = $("<div id='popupWindow'></div>")
+                .appendTo("body")
+                .kendoWindow({
+                    width: ss4.Screen().width / 1.2,
+                    modal: true,
+                    title: "Import dữ liệu sản phẩm",
+                    visible: false,
+                    animation: {
+                        open: { effects: 'expand:vertical' },
+                        close: { effects: 'expand:vertical', reverse: true }
+                    },
+                    close: function (e) {
+                        this.destroy();
+                    }
+                }).data('kendoWindow').content($('#dlgTemplate').html()).center().open();
+
+
+        $("#gridImport").kendoGrid({
+            columns: [
+                { field: "masp", title: "Mã sản phẩm" },
+                { field: "tensp", title: "Tên sản phẩm" },
+                { field: "blonhon1000", title: "Lớn hơn 1000mm" },
+                { field: "heso", title: "Hệ số" }
+            ],
+            dataSource: {
+                data: arrImportData
+            }
+        });
+
+        //viewAddModel.onInit(oWin, this.selectedRow.id);
+        //kendo.bind($("#dlgAdd"), viewAddModel);
+    }
+</script>
+
+<script id="dlgTemplate" type="text/x-kendo-template">
+    <div id="dlgAdd">
+        
+        <div id="gridImport"></div>
+        <div id="toolbarDlg" style="margin:10px 0px;text-align:center;">
+            <a href="javascript:void(0)" onclick="doSaveImport()" tabindex="0" class="k-button k-toolbar-first-visible" data-overflow="auto" style="visibility: visible;text-align:center;">Lưu và đóng</a>
+            <a href="javascript:void(0)" onclick="oWin.close()" tabindex="0" class="k-button k-toolbar-first-visible" data-overflow="auto" style="visibility: visible;">Bỏ qua</a>
+        </div>
+    </div>
+</script>

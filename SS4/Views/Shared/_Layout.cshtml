@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CÔNG TY CỔ PHẦN TKMB</title>
+    <link rel="stylesheet" href="~/Content/css/bootstrap.min.css">
+    <link href="~/Content/libs/kendo/css/2016.1.112/kendo.common-material.min.css" rel="stylesheet" />
+    <link href="~/Content/libs/kendo/css/2016.1.112/kendo.material.min.css" rel="stylesheet" />
+    <link href="~/Content/libs/kendo/css/2016.1.112/kendo.material.mobile.min.css" rel="stylesheet" />
+    <link href="~/Content/libs/kendo/css/2016.1.112/kendo.mobile.all.min.css" rel="stylesheet" />    
+    <link rel="stylesheet" href="~/Content/css/styles.css">
+
+    <script src="~/Content/libs/kendo/js/2016.1.112/jquery.min.js"></script>
+    <script src="~/Content/libs/kendo/js/2016.1.112/kendo.all.min.js"></script>    
+    <script src="~/Content/libs/kendo/js/2016.1.112/jszip.min.js"></script>
+    <script src="~/Content/js/bootstrap.min.js"></script>
+    <script src="~/Content/js/script.js"></script>
+</head>
+<body>    
+
+    @{ Html.RenderPartial("_TopMenu"); }
+    <div class="container-fluid container-main" style="height:calc(100% - 108px);">
+        @RenderBody()
+
+        
+    </div>
+
+    <!--dialogCommon-->
+    <div id="dialog"></div>
+
+    <footer class="k-header-footer">
+        <span id="copyright">Copyright © 2016 bản quyền thuộc công ty cổ phần TKMB. QUẢN LÝ SẢN XUẤT TKMB.</span>
+    </footer>
+</body>
+</html>

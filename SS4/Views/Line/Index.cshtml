@@ -1,0 +1,97 @@
+﻿@{
+    ViewBag.Title = "Định nghĩa danh sách line";
+}
+<style>
+    .clscenter {
+        text-align:center;
+    }
+</style>
+<script src="~/Content/js/model/lineModel.js"></script>
+<div id="wrapperMain">
+    <!-- action buttons -->
+    <div class="subhead-collapse" style="height: 43px;">
+        <div class="subhead">
+            <div class="container-fluid">
+                <div id="container-collapse" class="container-collapse"></div>
+                <div class="row-fluid">
+                    <div class="col-sm-12">
+                        <div class="btn-toolbar" id="toolbar">
+                            <div class="btn-wrapper" id="toolbar-apply">
+                                @if (clsShared.checkPermission("them", "line", "index"))
+                                {
+                                <button  type="button" class="btn btn-primary btn-sm margin-right-5" data-bind="click: onClick_Add">
+                                    <span class="glyphicon glyphicon-plus margin-right-5" aria-hidden="true"></span> THÊM
+                                </button>
+                                }
+@if (clsShared.checkPermission("xoa", "line", "index"))
+{
+                                <button type="button" class="btn btn-primary btn-sm margin-right-5" data-bind="click: onClick_Remove">
+                                    <span class="glyphicon glyphicon-remove margin-right-5" aria-hidden="true"></span> XÓA
+                                </button>
+}
+@if (clsShared.checkPermission("them", "line", "index") || clsShared.checkPermission("sua", "line", "index"))
+{
+                                <button type="button" class="btn btn-primary btn-sm margin-right-5" data-bind="click: onClick_Save">
+                                    <span class="glyphicon glyphicon-floppy-save margin-right-5" aria-hidden="true"></span> LƯU
+                                </button>
+}
+@if (clsShared.checkPermission("print", "line", "index"))
+{
+                                <button type="button" class="btn btn-primary btn-sm margin-right-5" style="position:absolute;right:0px;">
+                                    <span class="glyphicon glyphicon-print margin-right-5" aria-hidden="true"></span> PRINT
+                                </button>
+}
+@if (clsShared.checkPermission("excel", "line", "index"))
+{
+                                <button type="button" class="btn btn-primary btn-sm" style="position:absolute;right:90px;">
+                                    <span class="glyphicon glyphicon-download-alt margin-right-5" aria-hidden="true"></span> EXCEL
+                                </button>
+}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="wrapperContainer" style="height:100%">
+        <div class="wrapperGrid grid-section k-content wide">
+            <div>
+                <span id="notification"></span>
+                <div data-role="grid"
+                     @if (clsShared.checkPermission("them", "line", "index") || clsShared.checkPermission("sua", "line", "index"))
+                     {
+                         <text>
+                     data-editable="true"
+                     </text>
+                     }
+                     data-sortable="true"
+                     data-selectable="true"
+                     data-autoBind="false"
+                     data-scrollable="true"
+                     data-resizable="true"
+                     data-reorderable="true"
+                     data-columnMenu="true"
+                     data-groupable="false"
+                     data-height="auto"
+                     data-navigatable="true"
+                     @*data-mobile="phone"*@
+                     data-filterable='{"extra":false,"messages":{"info":"Hiển thị dữ liệu:","filter":"Lọc","clear":"Bỏ lọc","isTrue":"True","isFalse":"False","and":"Và","or":"Hoặc"},"operators":{"string":{"contains":"Lọc gần đúng","eq":"Lọc chính xác","neq":"Tất cả trừ"},"number":{"eq":"Bằng","neq":"Khác","gte":"Lớn hơn bằng","gt":"Lớn hơn","lte":"Nhỏ hơn bằng","lt":"Nhỏ hơn"},"date":{"eq":"Tìm chính xác","neq":"Khác ngày","gte":"Lớn hơn bằng","gt":"Lớn hơn","lte":"Nhỏ hơn bằng","lt":"Nhỏ hơn"}}}'
+                     data-pageable='{"refresh":true,"pageSize": 10, "pageSizes":true,"messages":{"display":"{0} - {1} / {2} dòng","empty":"Không có dữ liệu","page":"Trang","of":"của {0}","itemsPerPage":"","first":"Trang đầu","previous":"Trang trước","next":"Trang kế","last":"Trang cuối","refresh":"Làm mới"}}'
+                     data-columns="[
+                            { 'field': 'name', 'title': 'Tên Line', 'width': 270 },
+                            { 'field': 'p1', 'title': '1=Số Line; 2=Khác' },
+                            { 'field': 'p2', 'title': 'Thứ tự', 'width': 100, attributes: { class: 'clscenter' }, filterable: false, sortable: false }
+                    ]"
+                     data-bind="visible: isVisible,
+                                source: dataSource,
+                                events: {
+                                    save: onDebug,
+                                    change: onChangeRow
+                                }"></div>
+            </div>
+        </div>        
+    </div>
+</div>

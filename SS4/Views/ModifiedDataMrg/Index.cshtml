@@ -1,0 +1,279 @@
+﻿@{
+    ViewBag.Title = "Nhập liệu chỉnh sửa túi";
+    clsShared.SESSION_PARA oPara = clsShared.fReadSession();    
+}
+
+
+<style>
+    .grid-toolbar-btn {
+        position: absolute;
+        z-index: 999;
+        right: 8px;
+    }
+
+    .col-lg-1, .col-lg-10, .col-lg-11, .col-lg-12, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-md-1, .col-md-10, .col-md-11, .col-md-12, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-sm-1, .col-sm-10, .col-sm-11, .col-sm-12, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-xs-1, .col-xs-10, .col-xs-11, .col-xs-12, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9 {
+        padding-right: 0px;
+        padding-left: 0px;
+    }
+
+    .row {
+        margin-right: 0px;
+        margin-left: 0px;
+    }
+
+    .k-panelbar .k-tabstrip > .k-content, .k-tabstrip > .k-content {
+        padding: 0px;
+    }
+
+    .grouperr {
+        background-color: #f9f487 !important;
+        font-weight: bold;
+        height: 33px !important;
+    }
+
+    .detailerr {
+    }
+
+    .allowinputvalue {
+        background-color: #f5f7f8;
+        text-align: right;
+    }
+
+    .k-toolbar .k-button {
+        padding: 0px 14px;
+    }
+
+    .bgRed {
+        background-color: #f37b7b;
+        color: #333;
+    }
+
+    .bgGreen {
+        background-color: #13ce13;
+        color: #fff;
+    }
+
+    .bgYellow {
+        background-color: #f9f487;
+        color: #333;
+    }
+</style>
+<script type="text/javascript">
+    var arrProduct = @Html.Raw(new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(ViewData["tblProduct"]));
+    var arrEmployee = @Html.Raw(new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(ViewData["tblEmployee"]));
+    var arrCont = @Html.Raw(new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(ViewData["tblCont"]));
+    var arrLine = @Html.Raw(new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(ViewData["tblLine"]));
+    var arrSheet = @Html.Raw(new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(ViewData["tblSheet"]));
+    var currLineId = @oPara.employee.tbllineid;
+    var currDeptId = @oPara.employee.tbldeptid;
+    var currEmployeeId = @oPara.employee.id;
+    var benable = @((oPara.employee.tbldeptid == 313 || oPara.employee.tbldeptid == 10 ) ? 1 : 0);
+</script>
+<script src="~/Content/js/model/modifiedDataMrgModel.js"></script>
+<div id="wrapperMain">
+    <!-- action buttons -->
+    <div class="subhead-collapse" style="height: 43px;">
+        <div class="subhead">
+            <div class="container-fluid">
+                <div id="container-collapse" class="container-collapse"></div>
+                <div class="row-fluid">
+                    <div class="col-sm-12">
+                        <div class="btn-toolbar" id="toolbar">
+                            <div class="btn-wrapper" id="toolbar-apply">
+                                <button type="button" class="btn btn-primary btn-sm margin-right-5" data-bind="click: onClick_View">
+                                    <span class="glyphicon" aria-hidden="true"></span> XEM CHI TIẾT
+                                </button>
+                                @if (clsShared.checkPermission("them", "modifieddatamrg", "index"))
+                                {
+                                <button type="button" class="btn btn-primary btn-sm margin-right-5" data-bind="click: onClick_Add">
+                                    <span class="glyphicon glyphicon-plus margin-right-5" aria-hidden="true"></span> THÊM
+                                </button>
+                                }
+@if (clsShared.checkPermission("sua", "modifieddatamrg", "index"))
+{
+                                <button type="button" class="btn btn-primary btn-sm margin-right-5" data-bind="click: onClick_Edit">
+                                    <span class="glyphicon glyphicon-edit margin-right-5" aria-hidden="true"></span> SỬA
+                                </button>
+}
+@if (clsShared.checkPermission("xoa", "modifieddatamrg", "index"))
+{
+                                <button type="button" class="btn btn-primary btn-sm margin-right-5" data-bind="click: onClick_Remove">
+                                    <span class="glyphicon glyphicon-remove margin-right-5" aria-hidden="true"></span> XÓA
+                                </button>
+}
+
+                                <button type="button" class="btn btn-primary btn-sm margin-right-5" data-bind="click: onRefresh">
+                                    <span class="glyphicon glyphicon-refresh margin-right-5" aria-hidden="true"></span> TẢI LẠI
+                                </button>
+@if (clsShared.checkPermission("print", "modifieddatamrg", "index"))
+{
+                                <button type="button" class="btn btn-primary btn-sm margin-right-5" style="position:absolute;right:0px;">
+                                    <span class="glyphicon glyphicon-print margin-right-5" aria-hidden="true"></span> PRINT
+                                </button>
+}
+@if (clsShared.checkPermission("excel", "modifieddatamrg", "index"))
+{
+                                <button type="button" class="btn btn-primary btn-sm" style="position:absolute;right:90px;">
+                                    <span class="glyphicon glyphicon-download-alt margin-right-5" aria-hidden="true"></span> EXCEL
+                                </button>
+}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="wrapperContainer" style="height:100%">
+        <div class="wrapperGrid grid-section k-content wide">
+            <div>
+                <div data-role="grid"
+                     data-toolbar='[{name:"create","template": "<div class=\"toolbar\"></div>" }]' 
+                     data-editable="false"
+                     data-sortable="true"
+                     data-selectable="true"
+                     data-autoBind="false"
+                     data-scrollable="true"
+                     data-resizable="true"
+                     data-reorderable="true"
+                     data-columnMenu="true"
+                     data-groupable="false"
+                     data-height="auto"
+                     data-navigatable="true"
+                     @*data-mobile="phone"*@
+                     data-filterable='{"extra":false,"messages":{"info":"Hiển thị dữ liệu:","filter":"Lọc","clear":"Bỏ lọc","isTrue":"True","isFalse":"False","and":"Và","or":"Hoặc"},"operators":{"string":{"contains":"Lọc gần đúng","eq":"Lọc chính xác","neq":"Tất cả trừ"},"number":{"eq":"Bằng","neq":"Khác","gte":"Lớn hơn bằng","gt":"Lớn hơn","lte":"Nhỏ hơn bằng","lt":"Nhỏ hơn"},"date":{"eq":"Tìm chính xác","neq":"Khác ngày","gte":"Lớn hơn bằng","gt":"Lớn hơn","lte":"Nhỏ hơn bằng","lt":"Nhỏ hơn"}}}'
+                     data-pageable='{"refresh":true,"pageSize": 100, "pageSizes":true,"messages":{"display":"{0} - {1} / {2} dòng","empty":"Không có dữ liệu","page":"Trang","of":"của {0}","itemsPerPage":"","first":"Trang đầu","previous":"Trang trước","next":"Trang kế","last":"Trang cuối","refresh":"Làm mới"}}'
+                     data-columns="[
+                     { 'field': 'sheet', 'title': 'Ca làm', 'width': 120, locked: true },
+                            { 'field': 'code', 'title': 'Số phiếu', 'width': 200, locked: true },
+                            { 'field': 'contname', 'title': 'Số Cont', 'width': 200, locked: true  },
+                             { 'field': 'productname', 'title': 'Sản phẩm', 'width': 200, locked: true  },
+                             { 'field': 'linename', 'title': 'Line', 'width': 100  },
+                             { 'field': 'scheckdate', 'title': 'Ngày kiểm', 'width': 150, attributes: { class: 'text-center' }  },
+                             { 'field': 'fullname', 'title': 'Nhân viên nhập', 'width': 200  },
+                             { 'field': 'tuichinhsua', 'title': 'Túi chỉnh sửa', 'width': 160, template: viewMain_tuichinhsua, attributes: { class: 'text-right bgRed' }  },
+                             { 'field': 'tuilualai', 'title': 'Túi lựa lại', 'width': 160, template: viewMain_tuilualai, attributes: { class: 'text-right bgGreen' }  },
+                             ]"
+                     data-bind="visible: isVisible,
+                                source: dataSource,
+                                events: {
+                                    save: onDebug,
+                                    change: onChangeRow
+                                }"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/x-kendo-template" id="template">
+    <div class="toolbar">
+        <label>Từ ngày</label>
+        <input type="search" id="cbxFromDate" placeholder="Từ ngày" style="width: 160px;" />
+        <label>Đến ngày</label>
+        <input type="search" id="cbxToDate" placeholder="Đến ngày" style="width: 160px;" />
+        <button type="button" class="btn blackcolor btn-sm margin-right-5" id="btnXem">
+            <span class="glyphicon glyphicon-floppy-save margin-right-5" aria-hidden="true"></span> XEM
+        </button>
+    </div>
+</script>
+<script id="dlgTemplate" type="text/x-kendo-template">
+    <div id="dlgAdd">
+        <div class="demo-section k-content">
+            <div>
+                <!-- toolbar -->
+                <div id="toolbarDlg"></div>
+                <form id="frmData" action="javascript:void(0);" style="float:left;width:100%;">
+                    @*<input type="hidden" id="masterid" name="masterid" value="0" />*@
+                    <div class="modal-dialog" style="margin:0px;width:100%;">
+                        <div class="modal-body">
+                            <div class="container col-sm-12 col-md-12">
+                                <div class="row" style="margin-bottom:8px;">
+                                    <div class="col-sm-2 col-md-2" style="padding:5px 0px;text-align:right;">Số phiếu&nbsp;&nbsp; </div>
+                                    <div class="col-sm-4 col-md-4">
+                                        <input type="text" id="txtcode" name="txtcode" class="k-textbox" placeholder="Mã số" required validationMessage="Vui lòng nhập mã số" style="width:100%;" />
+                                    </div>
+                                    <div class="col-sm-2 col-md-2" style="padding:5px 0px;text-align:right;">Số Cont&nbsp;&nbsp; </div>
+                                    <div class="col-sm-4 col-md-4">
+                                        <input id="cbCont" name="cbCont" placeholder="số Cont" style="width: 100%;" required validationMessage="Vui lòng chọn Cont" />
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-bottom:8px;">
+                                    <div class="col-sm-2 col-md-2" style="padding:5px 0px;text-align:right;">Tên SP&nbsp;&nbsp; </div>
+                                    <div class="col-sm-4 col-md-4">
+                                        <input id="cbProduct" name="cbProduct" placeholder="Tên SP" style="width: 100%;" required validationMessage="Vui lòng chọn sản phẩm" />
+                                    </div>
+                                    <div class="col-sm-2 col-md-2" style="padding:5px 0px;text-align:right;">Line số&nbsp;&nbsp; </div>
+                                    <div class="col-sm-4 col-md-4">
+                                        <input id="cbLine" name="cbLine" placeholder="Line số" style="width: 100%;" required validationMessage="Vui lòng chọn Line" />
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-bottom:8px;">
+                                    <div class="col-sm-2 col-md-2" style="padding:5px 0px;text-align:right;">Ngày kiểm&nbsp;&nbsp; </div>
+                                    <div class="col-sm-4 col-md-4">
+                                        <input id="txtngaykiem" name="txtngaykiem" value="@System.DateTime.Now.ToString("dd/MM/yyyy")" required style="width: 100%" validationMessage="Vui lòng chọn ngày kiểm" />
+                                    </div>
+
+                                    <div class="col-sm-2 col-md-2" style="padding:5px 0px;text-align:right;">Ca kiểm&nbsp;&nbsp; </div>
+                                    <div class="col-sm-4 col-md-4">
+                                        <input id="cbCa" name="cbCa" placeholder="Ca làm việc" style="width: 100%;" required validationMessage="Vui lòng chọn Ca" />
+                                    </div>
+
+                                    <div class="col-sm-2 col-md-2" style="padding:5px 0px;text-align:right;display:none;">Số cuồn/ Roll&nbsp;&nbsp; </div>
+                                    <div class="col-sm-4 col-md-4" style="display:none;">
+                                        <input id="txtroll" name="txtroll" type="number" value="1" min="1" max="10" step="1" style="width: 100%" validationMessage="Vui lòng nhập số cuộn" />
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-bottom:8px;display:none;">
+                                    <div class="col-sm-2 col-md-2" style="padding:5px 0px;text-align:right;"><strong style="color:red;">Tổng bao kiểm&nbsp;&nbsp;</strong></div>
+                                    <div class="col-sm-4 col-md-4">
+                                        <input id="txtsobaokiem" name="txtsobaokiem" type="number" value="0" min="0" max="99999999" step="1" style="width: 100%" validationMessage="Vui lòng nhập số bao kiểm" />
+                                    </div>
+                                    <div class="col-sm-2 col-md-2" style="padding:5px 0px;text-align:right;"><strong style="color:red;">Tổng bao đạt&nbsp;&nbsp;</strong> </div>
+                                    <div class="col-sm-4 col-md-4">
+                                        <input id="txtsobaodat" name="txtsobaodat" type="number" value="0" min="0" max="99999999" step="1" style="width: 100%" required />
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-bottom:8px;">
+                                    <div class="col-sm-2 col-md-2" style="padding:5px 0px;text-align:right;">Tên người nhập&nbsp;&nbsp; </div>
+                                    <div class="col-sm-4 col-md-4">
+                                        <input id="cbEmployee" name="cbEmployee" placeholder="Tên người dùng" style="width: 100%;" required validationMessage="Vui lòng nhập người kiểm tra" />
+                                    </div>
+
+                                    <div class="col-sm-2 col-md-2" style="padding:5px 0px;text-align:right;display:none;"><strong style="color:red;">Phế liệu&nbsp;&nbsp;</strong> </div>
+                                    <div class="col-sm-4 col-md-4" style="display:none;">
+                                        <input id="txtphelieu" name="txtphelieu" type="number" value="0" min="0" max="99999999" step="1" style="width: 100%" />
+                                    </div>
+
+                                    
+
+                                </div>
+                                <div class="row" style="margin-bottom:8px;display:none;">
+                                    <div class="col-sm-2 col-md-2" style="padding:5px 0px;text-align:right;">Số lần kiểm&nbsp;&nbsp; </div>
+                                    <div class="col-sm-4 col-md-10">
+                                        <input id="txtlankiem" name="txtlankiem" type="number" value="1" min="1" max="10" step="1" style="width: 100%" />
+                                    </div>
+
+                                </div>
+
+                                <!-- tabContainer -->
+                                <div class="row" style="margin-bottom:10px;">
+                                    <div id="tabstrip"></div>
+                                </div>
+
+                                @*<div class="row" style="text-align: center;margin: 10px 0px;padding-top: 10px;border-top: 1px solid #ccc;">
+                                        <button class="k-button k-primary" data-bind="click: btnSave_Click">Save Change</button>
+                                        <button class="k-button k-primary" data-bind="click: btnCancel_Click">Cancel</button>
+                                    </div>*@
+                            </div>
+                        </div>
+                    </div>
+
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</script>
