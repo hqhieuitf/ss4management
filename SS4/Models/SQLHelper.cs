@@ -822,7 +822,7 @@ using System.Collections;
             /// <summary>Connection is owned and managed by the caller</summary>
             External
         }
-
+       
         /// <summary>
         /// Create and prepare a SqlCommand, and call ExecuteReader with the appropriate CommandBehavior.
         /// </summary>
