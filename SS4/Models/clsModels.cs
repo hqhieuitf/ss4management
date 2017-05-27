@@ -18,6 +18,11 @@ namespace SS4.Models
         public string p3 { get; set; }
         public string p4 { get; set; }
         public string p5 { get; set; }
+        //20170524 HieuHQ Add Start
+        public string p6 { get; set; }
+        public string p7 { get; set; }
+        public string p8 { get; set; }
+        //20170524 HieuHQ Add End
         public DateTime lastedit { get; set; }
         public string slastedit { get { return lastedit.ToString("dd/MM/yyyy"); } }
         public int lastuser { get; set; }
@@ -142,30 +147,46 @@ namespace SS4.Models
         }
 
         public void import() {
-            SqlParameter[] arrPara = new SqlParameter[6];
+            //20170524 HieuHQ Mod Start
+            SqlParameter[] arrPara = new SqlParameter[9];
+            //20170524 HieuHQ Mod End
             (arrPara[0] = new SqlParameter("@name", SqlDbType.NVarChar, 200)).Value = name;
             (arrPara[1] = new SqlParameter("@p1", SqlDbType.NVarChar, 500)).Value = p1;
             (arrPara[2] = new SqlParameter("@p2", SqlDbType.VarChar, 5)).Value = p2;
             (arrPara[3] = new SqlParameter("@p3", SqlDbType.VarChar, 5)).Value = p3;
             (arrPara[4] = new SqlParameter("@p4", SqlDbType.VarChar, 5)).Value = p4;
             (arrPara[5] = new SqlParameter("@p5", SqlDbType.VarChar, 5)).Value = p5;
+            //20170524 HieuHQ Add Start
+            (arrPara[6] = new SqlParameter("@p6", SqlDbType.VarChar, 5)).Value = p6;
+            (arrPara[7] = new SqlParameter("@p7", SqlDbType.VarChar, 5)).Value = p7;
+            (arrPara[8] = new SqlParameter("@p8", SqlDbType.VarChar, 5)).Value = p8;
+            //20170524 HieuHQ Add End
             SqlHelper.ExecuteNonQuery(SqlHelper.ConnectionString, CommandType.StoredProcedure, "usp_tblproduct_createorupdate", arrPara);
         }
         public void Insert()
         {
-            SqlParameter[] arrPara = new SqlParameter[6];
+            //20170524 HieuHQ Mod Start
+            SqlParameter[] arrPara = new SqlParameter[9];
+            //20170524 HieuHQ Mod End
             (arrPara[0] = new SqlParameter("@name", SqlDbType.NVarChar, 200)).Value = name;
             (arrPara[1] = new SqlParameter("@p1", SqlDbType.NVarChar, 500)).Value = p1;
             (arrPara[2] = new SqlParameter("@p2", SqlDbType.VarChar, 5)).Value = p2;
             (arrPara[3] = new SqlParameter("@p3", SqlDbType.VarChar, 5)).Value = p3;
             (arrPara[4] = new SqlParameter("@p4", SqlDbType.VarChar, 5)).Value = p4;
             (arrPara[5] = new SqlParameter("@p5", SqlDbType.VarChar, 5)).Value = p5;
+            //20170524 HieuHQ Add Start
+            (arrPara[6] = new SqlParameter("@p6", SqlDbType.VarChar, 5)).Value = p6;
+            (arrPara[7] = new SqlParameter("@p7", SqlDbType.VarChar, 5)).Value = p7;
+            (arrPara[8] = new SqlParameter("@p8", SqlDbType.VarChar, 5)).Value = p8;
+            //20170524 HieuHQ Add End
             SqlHelper.ExecuteNonQuery(SqlHelper.ConnectionString, CommandType.StoredProcedure, "usp_tblproduct_insert", arrPara);
         }
 
         public void Update()
         {
-            SqlParameter[] arrPara = new SqlParameter[7];
+            //20170524 HieuHQ Mod Start
+            SqlParameter[] arrPara = new SqlParameter[10];
+            //20170524 HieuHQ Mod End
             (arrPara[0] = new SqlParameter("@id", SqlDbType.Int)).Value = id;
             (arrPara[1] = new SqlParameter("@name", SqlDbType.NVarChar, 200)).Value = name;
             (arrPara[2] = new SqlParameter("@p1", SqlDbType.NVarChar, 500)).Value = p1;
@@ -173,6 +194,11 @@ namespace SS4.Models
             (arrPara[4] = new SqlParameter("@p3", SqlDbType.VarChar, 5)).Value = p3;
             (arrPara[5] = new SqlParameter("@p4", SqlDbType.VarChar, 5)).Value = p4;
             (arrPara[6] = new SqlParameter("@p5", SqlDbType.VarChar, 5)).Value = p5;
+            //20170524 HieuHQ Add Start
+            (arrPara[7] = new SqlParameter("@p6", SqlDbType.VarChar, 5)).Value = p6;
+            (arrPara[8] = new SqlParameter("@p7", SqlDbType.VarChar, 5)).Value = p7;
+            (arrPara[9] = new SqlParameter("@p8", SqlDbType.VarChar, 5)).Value = p8;
+            //20170524 HieuHQ Add End
             SqlHelper.ExecuteNonQuery(SqlHelper.ConnectionString, CommandType.StoredProcedure, "usp_tblproduct_update", arrPara);
         }
 

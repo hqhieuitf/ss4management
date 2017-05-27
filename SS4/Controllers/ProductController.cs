@@ -126,7 +126,12 @@ namespace SS4.Controllers
                     p2 = string.IsNullOrEmpty(item.p2) ? "0" : item.p2,
                     p3 = string.IsNullOrEmpty(item.p3) ? "0" : item.p3,
                     p4 = item.p4,
-                    p5 = item.p5
+                    p5 = item.p5,
+                    //20170524 HieuHQ Add Start
+                    p6 = item.p6,
+                    p7 = item.p7,
+                    p8 = item.p8
+                    //20170524 HieuHQ Add End
                 });
             }
 

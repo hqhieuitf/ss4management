@@ -20,16 +20,77 @@ function hesoView(model) {
     //try {
     if (model.p3numeric != null) model.p3 = model.p3numeric.toString();
         else model.p3numeric = parseFloat(model.p3);
-        return model.p3 == null ? '' : model.p3;
+        return model.p3 == null ? 0 : model.p3;
     //} catch (e) { return ''; }
 }
-
+//20170524 HieuHQ Add Start
+function p4Editor(container, options) {
+    $('<input required name="' + options.field + '"/>')
+        .appendTo(container)
+        .kendoNumericTextBox({
+            step: 1.0
+        });
+};
+function p4View(model) {
+    if (model.p4numeric != null) model.p4 = model.p4numeric.toString();
+    else model.p4numeric = parseFloat(model.p4);
+    return model.p4 == null ? '' : model.p4;
+}
+function p5View(model) {
+    if (model.p5numeric != null) model.p5 = model.p5numeric.toString();
+    else model.p5numeric = parseFloat(model.p5);
+    return model.p5 == null ? '' : model.p5;
+}
+function p5Editor(container, options) {
+    $('<input required name="' + options.field + '"/>')
+        .appendTo(container)
+        .kendoNumericTextBox({
+            step: 1.0
+        });
+};
+function p6View(model) {
+    if (model.p6numeric != null) model.p6 = model.p6numeric.toString();
+    else model.p6numeric = parseFloat(model.p6);
+    return model.p6 == null ? '' : model.p6;
+}
+function p6Editor(container, options) {
+    $('<input required name="' + options.field + '"/>')
+        .appendTo(container)
+        .kendoNumericTextBox({
+            step: 1.0
+        });
+};
+function p7View(model) {
+    if (model.p7numeric != null) model.p7 = model.p7numeric.toString();
+    else model.p7numeric = parseFloat(model.p7);
+    return model.p7 == null ? '' : model.p7;
+}
+function p7Editor(container, options) {
+    $('<input required name="' + options.field + '"/>')
+        .appendTo(container)
+        .kendoNumericTextBox({
+            step: 1.0
+        });
+};
+function p8View(model) {
+    if (model.p8numeric != null) model.p8 = model.p8numeric.toString();
+    else model.p8numeric = parseFloat(model.p8);
+    return model.p8 == null ? '' : model.p8;
+}
+function p8Editor(container, options) {
+    $('<input required name="' + options.field + '"/>')
+        .appendTo(container)
+        .kendoNumericTextBox({
+            step: 1.0
+        });
+};
+//20170524 HieuHQ Add End
 var viewModel = kendo.observable({
     isVisible: true,
     selectedRow: null,
     ModelEntity: function () { return kendo.observable({ data: {} }); },
 
-    onDebug: function (e) { console.log("event :: save(" + kendo.stringify(e.values, null, 4) + ")"); },
+    onDebug: function (e) { console.log("event :: save(" + kendo.stringify(e.values, null, 9) + ")"); },
     dataSource: new kendo.data.DataSource({
         schema: {
             model: {
@@ -39,9 +100,21 @@ var viewModel = kendo.observable({
                     p1: { type: "string", editable: true },
                     p2: { type: "string", editable: true },
                     p3: { type: "string", editable: true },
-                    p4: { type: "string", editable: true },
-                    p5: { type: "string", editable: true },
+                    p4: { type: "string", editable: true},
+                    p5: { type: "string", editable: true},
+                    //20170524 HieuHQ Add Start
+                    p6: { type: "string", editable: true },
+                    p7: { type: "string", editable: true },
+                    p8: { type: "string", editable: true },
+                    //20170524 HieuHQ Add End
                     p2checkbox: { type: "boolean", editable: true, defaultValue: false },
+                    //20170524 HieuHQ Add Start
+                    p4numeric: { type: "number", editable: true, defaultValue: 0 },
+                    p5numeric: { type: "number", editable: true, defaultValue: 0 },
+                    p6numeric: { type: "number", editable: true, defaultValue: 0 },
+                    p7numeric: { type: "number", editable: true, defaultValue: 0 },
+                    p8numeric: { type: "number", editable: true, defaultValue: 0 },
+                    //20170524 HieuHQ Add End
                     p3numeric: { type: "number", editable: true, defaultValue: 0 }
                 }
             },
@@ -103,6 +176,13 @@ var viewModel = kendo.observable({
         //var grid = e.sender;
         for (var i = 0; i < this.dataSource._data.length; i++) {
             this.dataSource._data[i].p2checkbox = this.dataSource._data[i].p2 == '0' ? false : true;
+            //20170524 HieuHQ Add Start
+            this.dataSource._data[i].p4numeric = this.dataSource._data[i].p4 == null ? null : this.dataSource._data[i].p4;
+            this.dataSource._data[i].p5numeric = this.dataSource._data[i].p5 == null ? null : this.dataSource._data[i].p5;
+            this.dataSource._data[i].p6numeric = this.dataSource._data[i].p6 == null ? null : this.dataSource._data[i].p6;
+            this.dataSource._data[i].p7numeric = this.dataSource._data[i].p7 == null ? null : this.dataSource._data[i].p7;
+            this.dataSource._data[i].p8numeric = this.dataSource._data[i].p8 == null ? null : this.dataSource._data[i].p8;
+            //20170524 HieuHQ Add End
             //this.dataSource._data[i].p3numeric = parseFloat(this.dataSource._data[i].p3);
         }
     },
@@ -139,7 +219,16 @@ var viewModel = kendo.observable({
 
     onClick_Save: function () {
         for (var i = 0; i < this.dataSource._data.length; i++)
+        {
             this.dataSource._data[i].p2 = (this.dataSource._data[i].p2checkbox == true ? '1' : '0');
+            //20170524 HieuHQ Add Start
+            this.dataSource._data[i].p4 = (this.dataSource._data[i].p4numeric == null ? null : this.dataSource._data[i].p4numeric);
+            this.dataSource._data[i].p5 = (this.dataSource._data[i].p5numeric == null ? null : this.dataSource._data[i].p5numeric);
+            this.dataSource._data[i].p6 = (this.dataSource._data[i].p6numeric == null ? null : this.dataSource._data[i].p6numeric);
+            this.dataSource._data[i].p7 = (this.dataSource._data[i].p7numeric == null ? null : this.dataSource._data[i].p7numeric);
+            this.dataSource._data[i].p8 = (this.dataSource._data[i].p8numeric == null ? null : this.dataSource._data[i].p8numeric);
+            //20170524 HieuHQ Add End
+        }
         this.dataSource.sync();
     },
 

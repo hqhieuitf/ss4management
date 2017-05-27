@@ -133,8 +133,14 @@
                             { 'field': 'name', 'title': 'Mã sản phẩm', 'width': 180 },
                             { 'field': 'p1', 'title': 'Tên sản phẩm' },
                             { 'field': 'p2checkbox', 'title': 'Lớn hơn (1000mm)', width: 200,editor: checkboxEditor, template: checkboxView, attributes:{style:'text-align:center;'} },
-                            { 'field': 'p3numeric', 'title': 'Hệ số', width: 200,editor: hesoEditor, template: hesoView, attributes:{style:'text-align:right;'}  },
-                            { 'field': 'p1', 'title': 'Chiều rộng', width: 100 },
+                            { 'field': 'p3numeric', 'title': 'Hệ số', width: 120,editor: hesoEditor, template: hesoView, attributes:{style:'text-align:right;'}  },
+                             @*20170524 HieuHQ Add Start*@
+                            { 'field': 'p4numeric', 'title': 'Chiều rộng', width: 120,editor: p4Editor, template: p4View, attributes:{style:'text-align:right;'} },
+                            { 'field': 'p5numeric', 'title': 'Xếp hông', width: 120,editor: p5Editor, template: p5View, attributes:{style:'text-align:right;'}  },
+                            { 'field': 'p6numeric', 'title': 'Chiều dài', width: 120,editor: p6Editor, template: p6View, attributes:{style:'text-align:right;'} },
+                            { 'field': 'p7numeric', 'title': 'Phần dán', width: 120,editor: p7Editor, template: p7View, attributes:{style:'text-align:right;'}  },
+                            { 'field': 'p8numeric', 'title': 'Vị trí chống trượt', width: 120,editor: p8Editor, template: p8View, attributes:{style:'text-align:right;'}}
+                            @*20170524 HieuHQ Add Start*@
 
                      ]"
                      data-bind="visible: isVisible,
@@ -189,7 +195,13 @@
                     arrImport[i].tensp = arrImport[i]['2'];
                     arrImport[i].blonhon1000 = arrImport[i]['3'];
                     arrImport[i].heso = arrImport[i]['4'];
-
+                    //20170524 HieuHQ Add Start
+                    arrImport[i].chieurong = arrImport[i]['5'];
+                    arrImport[i].xephong = arrImport[i]['6'];
+                    arrImport[i].chieudai = arrImport[i]['7'];
+                    arrImport[i].phandan = arrImport[i]['8'];
+                    arrImport[i].vitrichongtruot = arrImport[i]['9'];
+                    //20170524 HieuHQ Add End
                     arrImportData.push(arrImport[i]);
                 }
                 //arrImportData = arrImport;
@@ -212,6 +224,13 @@
                 p1: arrImportData[i].tensp,
                 p2: arrImportData[i].blonhon1000,
                 p3: arrImportData[i].heso,
+                //20170524 HieuHQ Add Start
+                p4: arrImportData[i].chieurong,
+                p5: arrImportData[i].xephong,
+                p6: arrImportData[i].chieudai,
+                p7: arrImportData[i].phandan,
+                p8: arrImportData[i].vitrichongtruot,
+                //20170524 HieuHQ Add End
             });
         }
         if (arrResult.length != 0) {
@@ -253,7 +272,14 @@
                 { field: "masp", title: "Mã sản phẩm" },
                 { field: "tensp", title: "Tên sản phẩm" },
                 { field: "blonhon1000", title: "Lớn hơn 1000mm" },
-                { field: "heso", title: "Hệ số" }
+                { field: "heso", title: "Hệ số" },
+                //20170524 HieuHQ Add Start
+                { field: "chieurong", title: "Chiều rộng" },
+                { field: "xephong", title: "Xếp hông" },
+                { field: "chieudai", title: "Chiều dài" },
+                { field: "phandan", title: "Phần dán" },
+                { field: "vitrichongtruot", title: "Vị trí chống trượt" }
+                //20170524 HieuHQ Add Start
             ],
             dataSource: {
                 data: arrImportData
